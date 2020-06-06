@@ -4,7 +4,9 @@ import com.tapumandal.ims.entity.Company;
 import com.tapumandal.ims.entity.Product;
 import com.tapumandal.ims.repository.CompanyRepository;
 import com.tapumandal.ims.service.CompanyService;
+import com.tapumandal.ims.util.MyPagenation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -20,7 +22,7 @@ public class CompanyServiceImpl implements CompanyService {
     Company company;
 
     @Override
-    public List<Company> create(Company company) {
+    public Company create(Company company) {
 
 //        try {
 //            if(companyRepository.create(company)){
@@ -38,13 +40,18 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public ArrayList<Company> getAll() {
+    public ArrayList<Company> getAll(Pageable pageable) {
         return null;
     }
 
     @Override
     public Company getById(int id) {
         return null;
+    }
+
+    @Override
+    public boolean deleteById(int id) {
+        return false;
     }
 
     @Override
@@ -65,5 +72,10 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public boolean isDeleted(int id) {
         return false;
+    }
+
+    @Override
+    public MyPagenation getPageable(Pageable pageable) {
+        return null;
     }
 }

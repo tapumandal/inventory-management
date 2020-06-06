@@ -3,18 +3,17 @@ package com.tapumandal.ims.controller.v1;
 import com.tapumandal.ims.entity.*;
 import com.tapumandal.ims.entity.dto.*;
 import com.tapumandal.ims.service.ProductService;
+import com.tapumandal.ims.util.CommonResponseArray;
+import com.tapumandal.ims.util.CommonResponseSingle;
 import com.tapumandal.ims.util.ControllerHelper;
-import org.springframework.beans.BeanUtils;
+import com.tapumandal.ims.util.MyPagenation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -25,18 +24,18 @@ public class ProductController extends ControllerHelper<Product> {
     ProductService productService;
 
     @PostMapping(path = "/create")
-    public CommonResponseArray createProduct(@RequestBody ProductDto productDto, HttpServletRequest request) {
+    public CommonResponseSingle createProduct(@RequestBody ProductDto productDto, HttpServletRequest request) {
 
-        Product product = new Product(productDto);
+        Product pro = new Product(productDto);
 
-        List<Product> products = productService.create(product);
+        Product product = productService.create(pro);
 
-        if (products != null) {
-            return response(true, HttpStatus.CREATED, "New product inserted successfully", products);
-        } else if (products == null) {
-            return response(false, HttpStatus.NOT_ACCEPTABLE, "Something is wrong with database", (List<Product>) null);
+        if (product != null) {
+            return response(true, HttpStatus.CREATED, "New product inserted successfully", product);
+        } else if (product == null) {
+            return response(false, HttpStatus.NOT_ACCEPTABLE, "Something is wrong with data", (Product) null);
         }
-        return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong with the application", (List<Product>) null);
+        return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong with the application", (Product) null);
     }
 
     @GetMapping(path = "/{id}")
@@ -47,23 +46,25 @@ public class ProductController extends ControllerHelper<Product> {
         if (product != null) {
             return response(true, HttpStatus.FOUND, "Product by id: " + id, product);
         } else if (product == null) {
-            return response(false, HttpStatus.ACCEPTED, "Product not found or deleted", (Product) null);
+            return response(false, HttpStatus.NO_CONTENT, "Product not found or deleted", (Product) null);
         } else {
             return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong", (Product) null);
         }
     }
 
     @GetMapping(path = "/list")
-    public CommonResponseArray<Product> getAll(HttpServletRequest request) {
+    public CommonResponseArray<Product> getAll(HttpServletRequest request, Pageable pageable) {
 
-        List<Product> products = productService.getAll();
+        List<Product> products = productService.getAll(pageable);
+
+        MyPagenation myPagenation = managePagenation(request, productService, pageable);
 
         if (!products.isEmpty()) {
-            return response(true, HttpStatus.FOUND, "All product list", products);
+            return response(true, HttpStatus.FOUND, "All product list", products, myPagenation);
         } else if (products.isEmpty()) {
-            return response(false, HttpStatus.ACCEPTED, "No product added yet", new ArrayList<Product>());
+            return response(false, HttpStatus.NO_CONTENT, "No product found", new ArrayList<Product>(), myPagenation);
         } else {
-            return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong", new ArrayList<Product>());
+            return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong", new ArrayList<Product>(), myPagenation);
         }
 
     }
@@ -77,11 +78,22 @@ public class ProductController extends ControllerHelper<Product> {
         Product product = productService.update(pro);
 
         if (product != null) {
-            return response(true, HttpStatus.CREATED, "New product inserted successfully", product);
+            return response(true, HttpStatus.OK, "New product inserted successfully", product);
         } else if (product == null) {
-            return response(false, HttpStatus.NOT_ACCEPTABLE, "Something is wrong with database", (Product) null);
+            return response(false, HttpStatus.BAD_REQUEST, "Something is wrong with data", (Product) null);
         }
         return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong with the application", (Product) null);
+    }
+
+    @DeleteMapping(path = "/{id}")
+    public CommonResponseSingle<Product> deleteProduct(@PathVariable("id") int id, HttpServletRequest request) {
+
+
+        if (productService.deleteById(id)) {
+            return response(true, HttpStatus.OK, "Product by id " + id + " is deleted", (Product) null);
+        } else{
+            return response(false, HttpStatus.NOT_FOUND, "Product not found or deleted", (Product) null);
+        }
     }
 
 }

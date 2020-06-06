@@ -1,17 +1,21 @@
 package com.tapumandal.ims.repository.implementation;
 
+import com.tapumandal.ims.entity.Measurement;
 import com.tapumandal.ims.entity.Product;
 import com.tapumandal.ims.repository.ProductRepository;
-import com.tapumandal.ims.repository.UserRepository;
+import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Repository
 @Transactional
@@ -33,20 +37,58 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Product create(Product product) {
 
         getSession().saveOrUpdate(product);
-        return product;
+        getSession().flush();
+        getSession().clear();
+        return getById(product.getId());
     }
 
     @Override
     public Product update(Product product) {
 
-        getSession().update(product);
-        return getById(product.getId());
+        Optional<Product> proTmp = Optional.ofNullable(getById(product.getId()));
+        getSession().clear();
+
+        if(proTmp.isPresent()){
+            getSession().update(product);
+            getSession().flush();
+            getSession().clear();
+            return getById(product.getId());
+        }else{
+            return null;
+        }
     }
 
     @Override
-    public List<Product> getAll() {
+    public List<Product> getAll(Pageable pageable) {
+
+
+        Query resQuery = getQuery();
+
+        int pageNum = pageable.getPageNumber();
+        if(pageNum<1){
+            pageNum = 1;
+        }
+
+        resQuery.setFirstResult((pageNum-1)*pageable.getPageSize());
+        resQuery.setMaxResults(pageable.getPageSize());
+        return resQuery.getResultList();
+    }
+
+    @Override
+    public MyPagenation getPageable(Pageable pageable) {
+        Query resQuery = getQuery();
+
+        MyPagenation myPagenation = new MyPagenation();
+
+        myPagenation.setTotalElement(resQuery.getResultList().size());
+        return myPagenation;
+    }
+
+    private Query getQuery(){
         String query = "FROM Product P WHERE P.isDeleted = 0";
-        return getSession().createQuery(query).list();
+        Query resQuery =  getSession().createQuery(query);
+
+        return resQuery;
     }
 
     @Override
@@ -66,7 +108,20 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public boolean delete(int id) {
-        return false;
+
+        Optional<Product> proTmp = Optional.ofNullable(getById(id));
+        if(proTmp.isPresent()){
+            Product product = proTmp.get();
+            product.setActive(false);
+            product.setDeleted(true);
+            product.setMeasurement(new ArrayList<Measurement>());
+
+            update(product);
+            return true;
+        }else{
+            return false;
+        }
     }
+
 
 }

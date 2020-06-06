@@ -20,7 +20,7 @@ import java.util.Set;
 public class ProductDto {
 
     @Nullable
-    private String id;
+    private int id;
 
     @NotNull(message = "Product name can't be null")
     @Size(min=2, max = 50, message = "Write a proper product name")
@@ -30,15 +30,17 @@ public class ProductDto {
     @Size(min=2, max = 50, message = "Product must have a price")
     private String pricePerUnit;
 
+    private boolean active = true;
+
     @Valid
     @Nullable
     Set<MeasurementDto> measurement = new HashSet<MeasurementDto>();
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -56,6 +58,14 @@ public class ProductDto {
 
     public void setPricePerUnit(String pricePerUnit) {
         this.pricePerUnit = pricePerUnit;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Set<MeasurementDto> getMeasurement() {

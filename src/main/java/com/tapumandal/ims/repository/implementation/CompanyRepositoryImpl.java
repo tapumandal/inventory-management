@@ -3,8 +3,10 @@ package com.tapumandal.ims.repository.implementation;
 import com.tapumandal.ims.entity.Company;
 import com.tapumandal.ims.entity.Product;
 import com.tapumandal.ims.repository.CompanyRepository;
+import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -41,7 +43,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     @Override
-    public ArrayList<Company> getAll() {
+    public ArrayList<Company> getAll(Pageable pageable) {
         return null;
     }
 
@@ -61,6 +63,11 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     @Override
     public boolean delete(int id) {
         return false;
+    }
+
+    @Override
+    public MyPagenation getPageable(Pageable pageable) {
+        return null;
     }
 
 }

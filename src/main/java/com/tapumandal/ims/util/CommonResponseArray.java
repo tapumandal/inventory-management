@@ -1,24 +1,21 @@
-package com.tapumandal.ims.entity;
+package com.tapumandal.ims.util;;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CommonResponseSingle<Entity> {
+public class CommonResponseArray<Entity> {
 
     public boolean action;
     public HttpStatus status;
     public String message;
-    public Entity data;
-
-    public CommonResponseSingle(){};
-
-    public CommonResponseSingle(boolean action, HttpStatus status, String message, Entity data) {
-        this.action = action;
-        this.status = status;
-        this.message = message;
-        this.data = data;
-    }
+    public List<Entity> data;
+    public MyPagenation myPagenation;
 
     public boolean isAction() {
         return action;
@@ -32,10 +29,7 @@ public class CommonResponseSingle<Entity> {
         return status;
     }
 
-    public void setStatus(HttpStatus status) {
-        this.status = status;
-    }
-    public void setCode(HttpStatus status) {
+    public void setStatus(HttpStatus code) {
         this.status = status;
     }
 
@@ -47,14 +41,19 @@ public class CommonResponseSingle<Entity> {
         this.message = message;
     }
 
-    public Entity getData() {
+    public List<Entity> getData() {
         return data;
     }
 
-    public void setData(Entity data) {
+    public void setData(List<Entity> data) {
         this.data = data;
     }
 
+    public MyPagenation getMyPagenation() {
+        return myPagenation;
+    }
 
-
+    public void setMyPagenation(MyPagenation myPagenation) {
+        this.myPagenation = myPagenation;
+    }
 }

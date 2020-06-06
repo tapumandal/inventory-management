@@ -1,20 +1,24 @@
-package com.tapumandal.ims.entity;;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+package com.tapumandal.ims.util;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CommonResponseArray<Entity> {
+public class CommonResponseSingle<Entity> {
 
     public boolean action;
     public HttpStatus status;
     public String message;
-    public List<Entity> data;
+    public Entity data;
+
+    public CommonResponseSingle(){};
+
+    public CommonResponseSingle(boolean action, HttpStatus status, String message, Entity data) {
+        this.action = action;
+        this.status = status;
+        this.message = message;
+        this.data = data;
+    }
 
     public boolean isAction() {
         return action;
@@ -28,7 +32,10 @@ public class CommonResponseArray<Entity> {
         return status;
     }
 
-    public void setStatus(HttpStatus code) {
+    public void setStatus(HttpStatus status) {
+        this.status = status;
+    }
+    public void setCode(HttpStatus status) {
         this.status = status;
     }
 
@@ -40,11 +47,14 @@ public class CommonResponseArray<Entity> {
         this.message = message;
     }
 
-    public List<Entity> getData() {
+    public Entity getData() {
         return data;
     }
 
-    public void setData(List<Entity> data) {
+    public void setData(Entity data) {
         this.data = data;
     }
+
+
+
 }

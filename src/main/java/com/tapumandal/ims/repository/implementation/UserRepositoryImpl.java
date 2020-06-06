@@ -3,9 +3,11 @@ package com.tapumandal.ims.repository.implementation;
 import com.tapumandal.ims.entity.User;
 
 import com.tapumandal.ims.repository.UserRepository;
+import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -48,7 +50,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
-    public List<User> getAll() {
+    public List<User> getAll(Pageable pageable) {
         return getSession().createQuery("from User").list();
     }
 
@@ -69,6 +71,11 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public boolean delete(int id) {
         return false;
+    }
+
+    @Override
+    public MyPagenation getPageable(Pageable pageable) {
+        return null;
     }
 
 

@@ -32,10 +32,10 @@ public class Measurement {
     @Column(name = "unit_per_package")
     private String unitPerPackage;
 
-    @Column(name = "is_active")
+    @Column(name = "is_active", columnDefinition = "boolean default 1")
     private boolean isActive;
 
-    @Column(name = "is_deleted")
+    @Column(name = "is_deleted", columnDefinition = "boolean default 0")
     private boolean isDeleted;
 
     @Column(name = "created_at")

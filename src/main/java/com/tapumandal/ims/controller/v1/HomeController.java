@@ -2,12 +2,12 @@ package com.tapumandal.ims.controller.v1;
 
 import com.tapumandal.ims.entity.*;
 import com.tapumandal.ims.entity.dto.*;
-import com.tapumandal.ims.repository.Repository;
 import com.tapumandal.ims.repository.UserRepository;
 import com.tapumandal.ims.repository.implementation.UserRepositoryImpl;
 import com.tapumandal.ims.service.MyUserDetailsService;
 import com.tapumandal.ims.service.UserService;
 import com.tapumandal.ims.service.CompanyService;
+import com.tapumandal.ims.util.CommonResponseSingle;
 import com.tapumandal.ims.util.ControllerHelper;
 import com.tapumandal.ims.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,12 +17,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")

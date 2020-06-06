@@ -4,7 +4,9 @@ import com.tapumandal.ims.entity.Product;
 import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.repository.UserRepository;
 import com.tapumandal.ims.service.UserService;
+import com.tapumandal.ims.util.MyPagenation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -36,7 +38,7 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<User> create(User activeService) {
+    public User create(User activeService) {
         return null;
     }
 
@@ -46,15 +48,20 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List getAll() {
+    public List getAll(Pageable pageable) {
 
-        return userRepository.getAll();
+        return userRepository.getAll(pageable);
     }
 
     @Override
     public User getById(int id) {
 
         return userRepository.getById(id);
+    }
+
+    @Override
+    public boolean deleteById(int id) {
+        return false;
     }
 
     @Override
@@ -75,6 +82,11 @@ public class UserServiceImpl implements UserService{
     @Override
     public boolean isDeleted(int id) {
         return false;
+    }
+
+    @Override
+    public MyPagenation getPageable(Pageable pageable) {
+        return null;
     }
 
 

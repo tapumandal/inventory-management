@@ -4,6 +4,7 @@ import com.tapumandal.ims.entity.dto.CompanyDto;
 import com.tapumandal.ims.entity.dto.MeasurementDto;
 import com.tapumandal.ims.entity.dto.ProductDto;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
 import org.springframework.beans.BeanUtils;
@@ -15,6 +16,7 @@ import java.util.*;
 
 @Entity
 @Table(name = "product")
+@DynamicUpdate
 public class Product {
 
 
@@ -29,15 +31,13 @@ public class Product {
     @Column(name = "price_per_unit")
     private String pricePerUnit;
 
-    @Column(name = "is_active")
-    @Value("${some.key:1}")
-    private boolean isActive;
+    @Column(name = "is_active", columnDefinition = "boolean default 1")
+    private boolean isActive = true;
 
-    @Column(name = "is_deleted")
-    @Value("${some.key:0}")
-    private boolean isDeleted;
+    @Column(name = "is_deleted", columnDefinition = "boolean default 0")
+    private boolean isDeleted = false;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable=false)
     @CreationTimestamp
     private Date createdAt;
 
@@ -52,15 +52,16 @@ public class Product {
             joinColumns = {@JoinColumn(name = "product_id")},
             inverseJoinColumns = {@JoinColumn(name = "measurement_id")}
     )
-    Set<Measurement> measurement = new HashSet<Measurement>();
-//    @Where(clause = "measurement_isDeleted == false")
+    @Where(clause = "is_deleted = false AND is_active = true" )
+    List<Measurement> measurement = new ArrayList<Measurement>();
 
 
     public Product(ProductDto productDto) {
 
-
+        this.setId(productDto.getId());
         this.setName(productDto.getName());
         this.setPricePerUnit(productDto.getPricePerUnit());
+        this.setActive(productDto.isActive());
 
         for(MeasurementDto measurementDto: productDto.getMeasurement()){
             measurement.add(new Measurement(measurementDto));
@@ -145,11 +146,11 @@ public class Product {
         this.updatedAt = updatedAt;
     }
 
-    public Set<Measurement> getMeasurement() {
+    public List<Measurement> getMeasurement() {
         return measurement;
     }
 
-    public void setMeasurement(Set<Measurement> measurement) {
+    public void setMeasurement(List<Measurement> measurement) {
         this.measurement = measurement;
     }
 }
