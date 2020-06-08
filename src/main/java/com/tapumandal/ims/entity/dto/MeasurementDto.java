@@ -1,17 +1,8 @@
 package com.tapumandal.ims.entity.dto;
 
-import com.sun.istack.Nullable;
-import com.tapumandal.ims.entity.Product;
-import org.hibernate.annotations.Where;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.sql.Date;
-import java.util.Collection;
 
 @Component
 public class MeasurementDto {

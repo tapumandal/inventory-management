@@ -1,5 +1,6 @@
 package com.tapumandal.ims.controller.v1;
 
+import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.entity.*;
 import com.tapumandal.ims.entity.dto.*;
 import com.tapumandal.ims.repository.UserRepository;

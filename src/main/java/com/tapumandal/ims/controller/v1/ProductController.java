@@ -1,7 +1,7 @@
 package com.tapumandal.ims.controller.v1;
 
-import com.tapumandal.ims.entity.*;
-import com.tapumandal.ims.entity.dto.*;
+import com.tapumandal.ims.entity.Product;
+import com.tapumandal.ims.entity.dto.ProductDto;
 import com.tapumandal.ims.service.ProductService;
 import com.tapumandal.ims.util.CommonResponseArray;
 import com.tapumandal.ims.util.CommonResponseSingle;

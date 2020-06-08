@@ -1,7 +1,6 @@
 package com.tapumandal.ims.repository.implementation;
 
 import com.tapumandal.ims.entity.Company;
-import com.tapumandal.ims.entity.Product;
 import com.tapumandal.ims.repository.CompanyRepository;
 import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Optional;
 
 @Repository
 @Transactional

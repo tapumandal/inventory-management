@@ -1,14 +1,12 @@
 package com.tapumandal.ims.entity;
 
-import com.tapumandal.ims.entity.dto.CompanyDto;
+import com.tapumandal.ims.entity.Measurement;
 import com.tapumandal.ims.entity.dto.MeasurementDto;
 import com.tapumandal.ims.entity.dto.ProductDto;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Value;
 
 import javax.persistence.*;
 import java.sql.Date;

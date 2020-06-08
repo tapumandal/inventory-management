@@ -1,6 +1,5 @@
 package com.tapumandal.ims.service;
 
-import com.tapumandal.ims.entity.Product;
 import com.tapumandal.ims.util.MyPagenation;
 import org.springframework.data.domain.Pageable;
 

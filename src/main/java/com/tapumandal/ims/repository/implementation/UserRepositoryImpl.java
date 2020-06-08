@@ -5,10 +5,8 @@ import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.repository.UserRepository;
 import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;

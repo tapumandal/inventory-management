@@ -2,6 +2,7 @@ package com.tapumandal.ims.entity.dto;
 
 import com.sun.istack.Nullable;
 import com.tapumandal.ims.entity.Measurement;
+import com.tapumandal.ims.entity.dto.MeasurementDto;
 import org.hibernate.annotations.Where;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

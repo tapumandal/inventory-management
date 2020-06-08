@@ -1,6 +1,5 @@
 package com.tapumandal.ims.service.implementation;
 
-import com.tapumandal.ims.entity.Product;
 import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.repository.UserRepository;
 import com.tapumandal.ims.service.UserService;
@@ -9,8 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Service

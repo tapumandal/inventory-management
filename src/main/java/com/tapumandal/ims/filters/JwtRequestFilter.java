@@ -1,6 +1,5 @@
 package com.tapumandal.ims.filters;
 
-import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.service.MyUserDetailsService;
 import com.tapumandal.ims.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;

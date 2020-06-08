@@ -1,7 +1,6 @@
 package com.tapumandal.ims.service.implementation;
 
 import com.tapumandal.ims.entity.Company;
-import com.tapumandal.ims.entity.Product;
 import com.tapumandal.ims.repository.CompanyRepository;
 import com.tapumandal.ims.service.CompanyService;
 import com.tapumandal.ims.util.MyPagenation;
@@ -10,7 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Service
