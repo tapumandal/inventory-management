@@ -33,8 +33,6 @@ public class ProductDto {
 
     private boolean active = true;
 
-    @Valid
-    @Nullable
     Set<MeasurementDto> measurement = new HashSet<MeasurementDto>();
 
     public int getId() {

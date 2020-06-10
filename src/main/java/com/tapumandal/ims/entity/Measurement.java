@@ -1,5 +1,9 @@
 package com.tapumandal.ims.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.tapumandal.ims.annotation.CustomProductSerializer;
 import com.tapumandal.ims.entity.dto.MeasurementDto;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -8,9 +12,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "measurement")
@@ -46,10 +48,17 @@ public class Measurement {
     @UpdateTimestamp
     private Date updatedAt;
 
-//    @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "measurement")
-//    Set<Product> products = new HashSet<Product>();
+//    @ManyToMany(cascade = { CascadeType.MERGE })
+//    @JoinTable(
+//            name = "product_measurement",
+//            joinColumns = {@JoinColumn(name = "measurement_id")},
+//            inverseJoinColumns = {@JoinColumn(name = "product_id")}
+//    )
+    @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "measurement")
+    @Where(clause = "is_deleted = false AND is_active = true" )
+    @JsonSerialize(using = CustomProductSerializer.class)
+    List<Product> products = new ArrayList<Product>();
 
-//    @Where(clause = "products_isDeleted == false")
 
     public Measurement() {}
 
@@ -124,11 +133,10 @@ public class Measurement {
         this.updatedAt = updatedAt;
     }
 
-//    public Set<Product> getProducts() {
-//        return products;
-//    }
-//
-//    public void setProducts(Set<Product> products) {
-//        this.products = products;
-//    }
+    public List<Product> getProducts() {
+        return products;
+    }
+    public void setProducts(List<Product> products) {
+        this.products = products;
+    }
 }

@@ -2,7 +2,9 @@ package com.tapumandal.ims.entity.dto;
 
 import org.springframework.stereotype.Component;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Component
 public class MeasurementDto {
@@ -10,10 +12,16 @@ public class MeasurementDto {
     @NotNull
     private int id;
 
+    @NotEmpty
+    @Size(min=2, max = 50, message = "Measurement must have a Unit Name")
     private String unitName;
 
+    @NotEmpty
+    @Size(min=2, max = 50, message = "Measurement must have a Unit Name")
     private String packageName;
 
+    @NotEmpty
+    @Size(min=2, max = 50, message = "Set the Unit per Package")
     private String unitPerPackage;
 
     public int getId() {

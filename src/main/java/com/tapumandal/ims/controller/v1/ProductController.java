@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class ProductController extends ControllerHelper<Product> {
     ProductService productService;
 
     @PostMapping(path = "/create")
-    public CommonResponseSingle createProduct(@RequestBody ProductDto productDto, HttpServletRequest request) {
+    public CommonResponseSingle createProduct(@RequestBody @Valid ProductDto productDto, HttpServletRequest request) {
 
         Product pro = new Product(productDto);
 
@@ -57,7 +58,7 @@ public class ProductController extends ControllerHelper<Product> {
 
         List<Product> products = productService.getAll(pageable);
 
-        MyPagenation myPagenation = managePagenation(request, productService, pageable);
+        MyPagenation myPagenation = managePagenation(request, productService.getPageable(pageable), pageable);
 
         if (!products.isEmpty()) {
             return response(true, HttpStatus.FOUND, "All product list", products, myPagenation);

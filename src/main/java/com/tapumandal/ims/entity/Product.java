@@ -1,5 +1,10 @@
 package com.tapumandal.ims.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.tapumandal.ims.annotation.CustomMeasurementSerializer;
 import com.tapumandal.ims.entity.Measurement;
 import com.tapumandal.ims.entity.dto.MeasurementDto;
 import com.tapumandal.ims.entity.dto.ProductDto;
@@ -43,7 +48,7 @@ public class Product {
     @UpdateTimestamp
     private Date updatedAt;
 
-    //    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+
     @ManyToMany(cascade = { CascadeType.MERGE })
     @JoinTable(
             name = "product_measurement",
@@ -51,8 +56,8 @@ public class Product {
             inverseJoinColumns = {@JoinColumn(name = "measurement_id")}
     )
     @Where(clause = "is_deleted = false AND is_active = true" )
+    @JsonSerialize(using = CustomMeasurementSerializer.class)
     List<Measurement> measurement = new ArrayList<Measurement>();
-
 
     public Product(ProductDto productDto) {
 
@@ -64,29 +69,11 @@ public class Product {
         for(MeasurementDto measurementDto: productDto.getMeasurement()){
             measurement.add(new Measurement(measurementDto));
         }
-
-//        BeanUtils.copyProperties(this.measurement, productDto.getMeasurement());
-
-//        Measurement measurement1 = new Measurement();
-//        measurement1.setId(productDto.getMeasurement()..getId());
-//        measurement1.setPackageName(productDto.getMeasurement().getPackageName());
-//        measurement1.setUnitPerPackage(productDto.getMeasurement().getUnitPerPackage());
-//
-//        this.name = name;
-//        this.pricePerUnit = pricePerUnit;
-//        this.measurement.add(measurement1);
     }
 
     public Product() {
 
     }
-
-//    public Product(ProductDto productDto) {
-//        this.setName(productDto.getName());
-//        this.setPricePerUnit(productDto.getPricePerUnit());
-//
-//
-//    }
 
     public int getId() {
         return id;

@@ -1,7 +1,9 @@
 package com.tapumandal.ims.repository.implementation;
 
 import com.tapumandal.ims.entity.Measurement;
+import com.tapumandal.ims.entity.Measurement;
 import com.tapumandal.ims.entity.Product;
+import com.tapumandal.ims.repository.MeasurementRepository;
 import com.tapumandal.ims.repository.ProductRepository;
 import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
@@ -18,7 +20,7 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public class ProductRepositoryImpl implements ProductRepository {
+public class MeasurementRepositoryImpl implements MeasurementRepository {
 
     @Autowired
     EntityManager entityManager;
@@ -30,32 +32,32 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 
     @Override
-    public Product create(Product product) {
+    public Measurement create(Measurement measurement) {
 
-        getSession().saveOrUpdate(product);
+        getSession().saveOrUpdate(measurement);
         getSession().flush();
         getSession().clear();
-        return getById(product.getId());
+        return getById(measurement.getId());
     }
 
     @Override
-    public Product update(Product product) {
+    public Measurement update(Measurement measurement) {
 
-        Optional<Product> proTmp = Optional.ofNullable(getById(product.getId()));
+        Optional<Measurement> proTmp = Optional.ofNullable(getById(measurement.getId()));
         getSession().clear();
 
         if(proTmp.isPresent()){
-            getSession().update(product);
+            getSession().update(measurement);
             getSession().flush();
             getSession().clear();
-            return getById(product.getId());
+            return getById(measurement.getId());
         }else{
             return null;
         }
     }
 
     @Override
-    public List<Product> getAll(Pageable pageable) {
+    public List<Measurement> getAll(Pageable pageable) {
 
 
         Query resQuery = getQuery();
@@ -81,23 +83,23 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     private Query getQuery(){
-        String query = "FROM Product P WHERE P.isDeleted = 0";
+        String query = "FROM Measurement P WHERE P.isDeleted = 0";
         Query resQuery =  getSession().createQuery(query);
 
         return resQuery;
     }
 
     @Override
-    public Product getById(int id) {
+    public Measurement getById(int id) {
 
-        String query = "FROM Product P WHERE P.id = "+id+" AND P.isDeleted = 0";
-        return (Product) getSession().createQuery(query).uniqueResult();
+        String query = "FROM Measurement P WHERE P.id = "+id+" AND P.isDeleted = 0";
+        return (Measurement) getSession().createQuery(query).uniqueResult();
     }
 
     @Override
-    public List<Product> getByKeyAndValue(String key, String value) {
-        return (List<Product>) getSession().createQuery(
-                "from Product where "+key+" = :value"
+    public List<Measurement> getByKeyAndValue(String key, String value) {
+        return (List<Measurement>) getSession().createQuery(
+                "from Measurement where "+key+" = :value"
         ).setParameter("value", value)
                 .getResultList();
     }
@@ -105,14 +107,14 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public boolean delete(int id) {
 
-        Optional<Product> proTmp = Optional.ofNullable(getById(id));
+        Optional<Measurement> proTmp = Optional.ofNullable(getById(id));
         if(proTmp.isPresent()){
-            Product product = proTmp.get();
-            product.setActive(false);
-            product.setDeleted(true);
-            product.setMeasurement(new ArrayList<Measurement>());
+            Measurement measurement = proTmp.get();
+            measurement.setActive(false);
+            measurement.setDeleted(true);
+            measurement.setProducts(new ArrayList<Product>());
 
-            update(product);
+            update(measurement);
             return true;
         }else{
             return false;
