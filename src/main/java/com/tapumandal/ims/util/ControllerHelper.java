@@ -36,8 +36,7 @@ public class ControllerHelper<Entity> {
 
         return commonResponseArray;
     }
-    protected MyPagenation managePagenation(HttpServletRequest request, ProductService productService, Pageable pageable) {
-        MyPagenation pagenation = productService.getPageable(pageable);
+    protected MyPagenation managePagenation(HttpServletRequest request, MyPagenation pagenation, Pageable pageable) {
 
         int totalPage = (int) Math.ceil((float)pagenation.getTotalElement()/(float)pageable.getPageSize());
 
