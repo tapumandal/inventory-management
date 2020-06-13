@@ -5,6 +5,8 @@ import org.springframework.stereotype.Component;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Component
 public class MeasurementDto {
@@ -23,6 +25,9 @@ public class MeasurementDto {
     @NotEmpty
     @Size(min=2, max = 50, message = "Set the Unit per Package")
     private String unitPerPackage;
+
+    Set<ProductDto> products = new HashSet<ProductDto>();
+
 
     public int getId() {
         return id;
@@ -54,5 +59,13 @@ public class MeasurementDto {
 
     public void setUnitPerPackage(String unitPerPackage) {
         this.unitPerPackage = unitPerPackage;
+    }
+
+    public Set<ProductDto> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<ProductDto> products) {
+        this.products = products;
     }
 }

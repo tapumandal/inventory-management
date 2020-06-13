@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.tapumandal.ims.annotation.CustomProductSerializer;
 import com.tapumandal.ims.entity.dto.MeasurementDto;
+import com.tapumandal.ims.entity.dto.ProductDto;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
@@ -35,12 +36,12 @@ public class Measurement {
     private String unitPerPackage;
 
     @Column(name = "is_active", columnDefinition = "boolean default 1")
-    private boolean isActive;
+    private boolean isActive = true;
 
     @Column(name = "is_deleted", columnDefinition = "boolean default 0")
-    private boolean isDeleted;
+    private boolean isDeleted = false;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", updatable=false)
     @CreationTimestamp
     private Date createdAt;
 
@@ -48,13 +49,17 @@ public class Measurement {
     @UpdateTimestamp
     private Date updatedAt;
 
-//    @ManyToMany(cascade = { CascadeType.MERGE })
-//    @JoinTable(
-//            name = "product_measurement",
-//            joinColumns = {@JoinColumn(name = "measurement_id")},
-//            inverseJoinColumns = {@JoinColumn(name = "product_id")}
-//    )
-    @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "measurement")
+
+//    @ManyToMany(cascade = CascadeType.MERGE, mappedBy = "measurement")
+//    @Where(clause = "is_deleted = false AND is_active = true" )
+
+
+    @ManyToMany
+    @JoinTable(
+            name = "product_measurement",
+            joinColumns = {@JoinColumn(name = "measurement_id")},
+            inverseJoinColumns = {@JoinColumn(name = "product_id")}
+    )
     @Where(clause = "is_deleted = false AND is_active = true" )
     @JsonSerialize(using = CustomProductSerializer.class)
     List<Product> products = new ArrayList<Product>();
@@ -67,6 +72,10 @@ public class Measurement {
         this.setUnitName(measurementDto.getUnitName());
         this.setPackageName(measurementDto.getPackageName());
         this.setUnitPerPackage(measurementDto.getUnitPerPackage());
+
+        for(ProductDto productDto: measurementDto.getProducts()){
+            products.add(new Product(productDto));
+        }
     }
 
     public int getId() {

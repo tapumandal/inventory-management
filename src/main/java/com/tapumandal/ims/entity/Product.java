@@ -49,7 +49,7 @@ public class Product {
     private Date updatedAt;
 
 
-    @ManyToMany(cascade = { CascadeType.MERGE })
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "product_measurement",
             joinColumns = {@JoinColumn(name = "product_id")},
