@@ -1,5 +1,6 @@
 package com.tapumandal.ims.service;
 
+import com.google.gson.Gson;
 import com.tapumandal.ims.entity.MyUserDetails;
 import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.repository.implementation.UserRepositoryImpl;
@@ -23,7 +24,7 @@ public class MyUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         
         user = userRepository.getByKeyAndValue("email", username).get(0);
-        
+        System.out.println(new Gson().toJson(new MyUserDetails(user).getAuthorities()));
         return new MyUserDetails(user);
     }
     

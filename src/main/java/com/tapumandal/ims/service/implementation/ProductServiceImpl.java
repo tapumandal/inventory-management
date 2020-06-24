@@ -1,6 +1,7 @@
 package com.tapumandal.ims.service.implementation;
 
 import com.tapumandal.ims.entity.Product;
+import com.tapumandal.ims.entity.dto.ProductDto;
 import com.tapumandal.ims.repository.ProductRepository;
 import com.tapumandal.ims.service.ProductService;
 import com.tapumandal.ims.util.MyPagenation;
@@ -26,24 +27,29 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product create(Product pro) {
+    public Product create(ProductDto productDto) {
+
+        Product pro = new Product(productDto);
         Optional<Product> product;
 
-        try{
+//        try{
             product = Optional.ofNullable(productRepository.create(pro));
-        }catch (Exception e){
-            return null;
-        }
-
-        if(product.isPresent()){
+//        }catch (Exception e){
+//            return null;
+//        }
+//
+//        if(product.isPresent()){
+//            return product.get();
+//        }else{
             return product.get();
-        }else{
-            return null;
-        }
+//        }
     }
 
     @Override
-    public Product update(Product pro) {
+    public Product update(ProductDto productDto) {
+
+
+        Product pro = new Product(productDto);
 
         Optional<Product> product;
         try{

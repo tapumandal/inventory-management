@@ -27,9 +27,8 @@ public class MeasurementController extends ControllerHelper<Measurement> {
     @PostMapping(path = "/create")
     public CommonResponseSingle createProduct(@RequestBody @Valid MeasurementDto measurementDto, HttpServletRequest request) {
 
-        Measurement pro = new Measurement(measurementDto);
 
-        Measurement measurement = measurementService.create(pro);
+        Measurement measurement = measurementService.create(measurementDto);
 
         if (measurement != null) {
             return response(true, HttpStatus.CREATED, "New measurement inserted successfully", measurement);
@@ -74,9 +73,7 @@ public class MeasurementController extends ControllerHelper<Measurement> {
     @PostMapping(path = "/update")
     public CommonResponseSingle updateProduct(@RequestBody MeasurementDto measurementDto, HttpServletRequest request) {
 
-        Measurement pro = new Measurement(measurementDto);
-
-        Measurement measurement = measurementService.update(pro);
+        Measurement measurement = measurementService.update(measurementDto);
 
         if (measurement != null) {
             return response(true, HttpStatus.OK, "New measurement inserted successfully", measurement);

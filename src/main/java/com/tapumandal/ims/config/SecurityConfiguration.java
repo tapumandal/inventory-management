@@ -1,10 +1,10 @@
 package com.tapumandal.ims.config;
 
 import com.tapumandal.ims.filters.JwtRequestFilter;
-import com.tapumandal.ims.service.MyUserDetailsService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,8 +18,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import javax.servlet.Filter;
 
+@Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    private String apiVersionUrl = "/api/v1";
 
     @Autowired
     UserDetailsService userDetailsService;
@@ -33,24 +36,27 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(userDetailsService);
     }
 
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        
-        http. cors()
-            .and()
-            .csrf().disable()
-            .authorizeRequests()
-            .antMatchers("/").permitAll()
-            .antMatchers("/registration").permitAll()
-            .antMatchers("/product/create").permitAll()
-            .antMatchers("/authenticate").permitAll()
-            .antMatchers("/admin").hasRole("ADMIN")
-            .antMatchers("/user").hasAnyRole("ADMIN", "USER")
-            .antMatchers("/dashboard").hasAnyRole("ADMIN", "USER")
-            .and().sessionManagement()
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
+            http.csrf().disable()
+                .authorizeRequests()
+                .antMatchers(apiVersionUrl+"/registration").permitAll()
+                .antMatchers(apiVersionUrl+"/authenticate").permitAll()
+                .antMatchers(apiVersionUrl+"/dashboard").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(apiVersionUrl+"/admin").hasRole("ADMIN")
+                .antMatchers(apiVersionUrl+"/user").hasRole("USER")
+                .antMatchers(apiVersionUrl+"/user/**").hasAnyAuthority("ADMIN")
+                .antMatchers(apiVersionUrl+"/product/create").hasAnyAuthority("ADMIN", "USER")
+                .antMatchers(apiVersionUrl+"/measurement/**").hasAnyAuthority("ADMIN", "USER")
+                .anyRequest().authenticated()
+                .and().sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+//                .anyRequest().authenticated()
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
+
     }
 
     @Bean

@@ -1,6 +1,7 @@
 package com.tapumandal.ims.service.implementation;
 
 import com.tapumandal.ims.entity.Company;
+import com.tapumandal.ims.entity.dto.CompanyDto;
 import com.tapumandal.ims.repository.CompanyRepository;
 import com.tapumandal.ims.service.CompanyService;
 import com.tapumandal.ims.util.MyPagenation;
@@ -20,7 +21,7 @@ public class CompanyServiceImpl implements CompanyService {
     Company company;
 
     @Override
-    public Company create(Company company) {
+    public Company create(CompanyDto companyDto) {
 
 //        try {
 //            if(companyRepository.create(company)){
@@ -33,7 +34,7 @@ public class CompanyServiceImpl implements CompanyService {
     }
 
     @Override
-    public Company update(Company company) {
+    public Company update(CompanyDto companyDto) {
         return null;
     }
 

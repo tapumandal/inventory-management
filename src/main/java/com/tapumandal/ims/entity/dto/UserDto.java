@@ -13,6 +13,8 @@ import java.sql.Date;
 
 @Component
 public class UserDto{
+    @NotNull
+    private int id;
 
     @NotNull(message = "name can't be empty")
     @Size(min=4, max = 32, message = "Write a proper name")
@@ -38,18 +40,15 @@ public class UserDto{
     @Size(min=3, max = 32, message = "Work Title is not valid")
     protected String work_title;
 
-//    @Nullable
-//    private CompanyDto companyDto;
+    @Nullable
+    private CompanyDto company;
 
-    public UserDto(){}
+    public int getId() {
+        return id;
+    }
 
-    public UserDto(@NotNull(message = "name can't be empty") @Size(min = 4, max = 32, message = "Write a proper name") String name, @NotNull(message = "email can't be empty") @Email(message = "Email is not valid") String email, @NotNull(message = "phone can't be empty") @Size(min = 7, max = 20, message = "Phone number is not usable") String phone, @NotNull(message = "password can't be empty") @Size(min = 6, max = 32, message = "Password is not valid") String password, @NotNull(message = "address can't be empty") @Size(min = 12, max = 32, message = "Address information is very less") String address, @NotNull(message = "Work title can't be empty") @Size(min = 3, max = 32, message = "Work Title is not valid") String work_title) {
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-        this.password = password;
-        this.address = address;
-        this.work_title = work_title;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -100,11 +99,13 @@ public class UserDto{
         this.work_title = work_title;
     }
 
-//    public CompanyDto getCompanyDto() {
-//        return companyDto;
-//    }
-//
-//    public void setCompanyDto(CompanyDto companyDto) {
-//        this.companyDto = companyDto;
-//    }
+    public CompanyDto getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyDto company) {
+        this.company = company;
+    }
+
+
 }

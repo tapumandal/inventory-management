@@ -2,22 +2,21 @@ package com.tapumandal.ims.entity;
 
 import java.sql.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.tapumandal.ims.entity.dto.UserDto;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.Where;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name="user")
 @Component
+@DynamicUpdate
 public class User {
 
     @Id
@@ -48,31 +47,40 @@ public class User {
     @Column(name = "role")
     protected String role;
 
-    @Column(name = "status")
-    protected boolean status;
+    @Column(name = "is_active", columnDefinition = "boolean default 1")
+    private boolean isActive = true;
 
-    @Column(name = "created_at")
+    @Column(name = "is_deleted", columnDefinition = "boolean default 0")
+    private boolean isDeleted = false;
+
+    @Column(name = "created_at", updatable=false)
     @CreationTimestamp
-    protected Date createdAt;
+    private Date createdAt;
 
     @Column(name = "updated_at")
     @UpdateTimestamp
-    protected Date updatedAt;
+    private Date updatedAt;
 
-    @Column(name = "is_deleted")
-    protected boolean isDeleted;
 
-    @Column(name = "company_id")
-    protected int companyID;
+    @ManyToOne(cascade=CascadeType.ALL)
+    @JoinColumn(name = "company_id")
+    @Where(clause = "company_is_deleted = false AND company_is_active = true" )
+    private Company company;
 
     public User(){};
+
     public User(UserDto userDto) {
+        this.id = userDto.getId();
         this.name = userDto.getName();
         this.email = userDto.getEmail();
         this.phone = userDto.getPhone();
         this.password = userDto.getPassword();
         this.address = userDto.getAddress();
         this.workTitle = userDto.getWork_title();
+
+        if(userDto.getCompany() != null){
+            this.company = new Company(userDto.getCompany());
+        }
     }
 
 
@@ -132,18 +140,6 @@ public class User {
         this.address = address;
     }
 
-    public boolean isStatus() {
-        return status;
-    }
-
-    public boolean getStatus() {
-        return status;
-    }
-
-    public void setStatus(boolean status) {
-        this.status = status;
-    }
-
     public Date getCreatedAt() {
         return createdAt;
     }
@@ -184,11 +180,19 @@ public class User {
         this.workTitle = workTitle;
     }
 
-    public int getCompanyID() {
-        return companyID;
+    public boolean isActive() {
+        return isActive;
     }
 
-    public void setCompanyID(int companyID) {
-        this.companyID = companyID;
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
     }
 }

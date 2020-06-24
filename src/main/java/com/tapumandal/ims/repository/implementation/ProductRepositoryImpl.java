@@ -33,9 +33,10 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Product create(Product product) {
 
         getSession().saveOrUpdate(product);
-        getSession().flush();
-        getSession().clear();
-        return getById(product.getId());
+//        getSession().flush();
+//        getSession().clear();
+        return product;
+//        return product;
     }
 
     @Override

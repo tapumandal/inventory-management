@@ -6,21 +6,21 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 
-public interface Service<ActiveSEntity> {
+public interface Service<ReqEntity, ResEntity> {
 
-    public ActiveSEntity create(ActiveSEntity activeService);
+    public ResEntity create(ReqEntity reqEntity);
 
-    public ActiveSEntity update(ActiveSEntity activeService);
+    public ResEntity update(ReqEntity reqEntity);
 
-    public List<ActiveSEntity> getAll(Pageable pageable);
+    public List<ResEntity> getAll(Pageable pageable);
 
-    public ActiveSEntity getById(int id);
+    public ResEntity getById(int id);
 
     public boolean deleteById(int id);
 
-    public ActiveSEntity getByValue(String kye, String value);
+    public ResEntity getByValue(String kye, String value);
 
-    public List<ActiveSEntity> getAllByValue(String kye, String value);
+    public List<ResEntity> getAllByValue(String kye, String value);
 
     public boolean isActive(int id);
 

@@ -5,9 +5,14 @@ import org.springframework.stereotype.Component;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class CompanyDto {
+
+    @NotNull
+    private int id;
 
     @NotNull(message = "Company name can't be empty")
     @Size(min=2, max = 32, message = "Write a proper name", groups = FinalVersion.class)
@@ -24,13 +29,13 @@ public class CompanyDto {
     @Size(min=12, max = 32, message = "Address information is very less", groups = FinalVersion.class)
     protected String address;
 
-    public CompanyDto(){}
 
-    public CompanyDto(@NotNull(message = "Company name can't be empty") @Size(min = 2, max = 32, message = "Write a proper name") String name, @Email(message = "Company email is not valid") String email, @NotNull(message = "phone can't be empty") @Size(min = 7, max = 20, message = "Phone number is not usable") String phone, @NotNull(message = "address can't be empty") @Size(min = 12, max = 32, message = "Address information is very less") String address) {
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-        this.address = address;
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -64,4 +69,5 @@ public class CompanyDto {
     public void setAddress(String address) {
         this.address = address;
     }
+
 }

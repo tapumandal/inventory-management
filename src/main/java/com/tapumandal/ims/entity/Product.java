@@ -19,7 +19,6 @@ import java.util.*;
 
 @Entity
 @Table(name = "product")
-@DynamicUpdate
 public class Product {
 
 
@@ -49,7 +48,7 @@ public class Product {
     private Date updatedAt;
 
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(
             name = "product_measurement",
             joinColumns = {@JoinColumn(name = "product_id")},

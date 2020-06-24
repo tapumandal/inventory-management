@@ -1,10 +1,13 @@
 package com.tapumandal.ims.repository.implementation;
 
+import com.tapumandal.ims.entity.Measurement;
+import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.entity.User;
 
 import com.tapumandal.ims.repository.UserRepository;
 import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -13,6 +16,7 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Transactional
@@ -38,29 +42,78 @@ public class UserRepositoryImpl implements UserRepository {
     public User create(User user) {
 
         getSession().save(user);
-
-        return user;
+        getSession().flush();
+//        getSession().clear();
+//        return null;
+//        return user;
+        return getById(user.getId());
     }
 
     @Override
-    public User update(User o) {
-        return null;
+    public User update(User user) {
+
+        Optional<User> proTmp = Optional.ofNullable(getById(user.getId()));
+        getSession().clear();
+
+        if(proTmp.isPresent()){
+            getSession().update(user);
+            getSession().flush();
+            getSession().clear();
+            return getById(user.getId());
+        }else{
+            return null;
+        }
     }
 
     @Override
     public List<User> getAll(Pageable pageable) {
-        return getSession().createQuery("from User").list();
+
+
+        Query resQuery = getQuery();
+
+        int pageNum = pageable.getPageNumber();
+        if(pageNum<1){
+            pageNum = 1;
+        }
+
+        resQuery.setFirstResult((pageNum-1)*pageable.getPageSize());
+        resQuery.setMaxResults(pageable.getPageSize());
+        return resQuery.getResultList();
+    }
+
+    @Override
+    public MyPagenation getPageable(Pageable pageable) {
+        Query resQuery = getQuery();
+
+        MyPagenation myPagenation = new MyPagenation();
+
+        myPagenation.setTotalElement(resQuery.getResultList().size());
+        return myPagenation;
+    }
+
+    private Query getQuery(){
+        String query = "FROM User P WHERE P.isDeleted = 0";
+        Query resQuery =  getSession().createQuery(query);
+
+        return resQuery;
     }
 
     @Override
     public User getById(int id) {
 
-        return getSession().load(User.class, id);
+        String query = "FROM User P WHERE P.id = "+id+" AND P.isDeleted = 0";
+        return (User) getSession().createQuery(query).uniqueResult();
+    }
+
+    public User getByUserName(String userName) {
+
+        String query = "FROM User P WHERE P.email = '"+userName+"' AND P.isDeleted = 0";
+        return (User) getSession().createQuery(query).uniqueResult();
     }
 
     @Override
-    public ArrayList<User> getByKeyAndValue(String key, String value) {
-        return (ArrayList<User>) getSession().createQuery(
+    public List<User> getByKeyAndValue(String key, String value) {
+        return (List<User>) getSession().createQuery(
                 "from User where "+key+" = :value"
         ).setParameter("value", value)
                 .getResultList();
@@ -68,22 +121,28 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public boolean delete(int id) {
-        return false;
-    }
 
-    @Override
-    public MyPagenation getPageable(Pageable pageable) {
-        return null;
+        Optional<User> proTmp = Optional.ofNullable(getById(id));
+        if(proTmp.isPresent()){
+            User user = proTmp.get();
+            user.setActive(false);
+            user.setDeleted(true);
+            update(user);
+            return true;
+        }else{
+            return false;
+        }
     }
-
 
     @Override
     public boolean isUserExist(String userName) {
 
-        if(getByKeyAndValue("email", userName).isEmpty() || getByKeyAndValue("email", userName) == null){
-            return false;
-        }else{
+        Optional<User> proTmp = Optional.ofNullable(getByUserName(userName));
+        if(proTmp.isPresent()){
             return true;
         }
+
+        return false;
+
     }
 }

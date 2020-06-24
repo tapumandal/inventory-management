@@ -1,5 +1,6 @@
 package com.tapumandal.ims.controller.v1;
 
+import com.google.gson.Gson;
 import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.entity.*;
 import com.tapumandal.ims.entity.dto.*;
@@ -8,10 +9,9 @@ import com.tapumandal.ims.repository.implementation.UserRepositoryImpl;
 import com.tapumandal.ims.service.MyUserDetailsService;
 import com.tapumandal.ims.service.UserService;
 import com.tapumandal.ims.service.CompanyService;
-import com.tapumandal.ims.util.CommonResponseSingle;
-import com.tapumandal.ims.util.ControllerHelper;
-import com.tapumandal.ims.util.JwtUtil;
+import com.tapumandal.ims.util.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,10 +22,12 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
-public class HomeController extends ControllerHelper {
+public class UserController extends ControllerHelper {
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -36,25 +38,7 @@ public class HomeController extends ControllerHelper {
     @Autowired
     JwtUtil jwtUtil;
     @Autowired
-    UserRepositoryImpl userRepo;
-    @Autowired
     UserService userService;
-    @Autowired
-    AdminUserDto adminUserDto;
-    @Autowired
-    UserDto userDto;
-    @Autowired
-    CompanyDto companyDto;
-    @Autowired
-    User user;
-    @Autowired
-    CompanyService comapnyService;
-
-    @Autowired
-    Company company;
-
-    @Autowired
-    UserRepository userRepository;
 
     @PostMapping("/authenticate")
     public ResponseEntity<Jwt> authenticate(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
@@ -79,19 +63,81 @@ public class HomeController extends ControllerHelper {
 
     @PostMapping(path = "/registration")
     public CommonResponseSingle userRegistration(@RequestBody @Valid UserDto userDto, HttpServletRequest request){
-//        companyDto = userDto.getCompanyDto();
+
+        System.out.println(new Gson().toJson(userDto));
 
         if(!userService.isUserExist(userDto.getEmail())){
-            User user = userService.createUser(new User(userDto));
+            User user = userService.createUser(userDto);
+
+            System.out.println(new Gson().toJson(user));
+
             if(user != null){
-//                comapnyService.create(new Company(companyDto));
                 return response(true, HttpStatus.CREATED, "User & Company registration successful", user);
             }else{
-                return response(true, HttpStatus.BAD_REQUEST, "Something is wrong. Try again or contact with service provider.", (User) null);
+                return response(false, HttpStatus.BAD_REQUEST, "Something is wrong please contact.", (User) null);
             }
 
         }else{
             return response(false, HttpStatus.NOT_ACCEPTABLE, "User already exist", (User) null);
+        }
+    }
+
+
+    @GetMapping(path = "user/{id}")
+    public CommonResponseSingle<User> getProduct(@PathVariable("id") int id, HttpServletRequest request) {
+
+        User user = userService.getById(id);
+
+        if (user != null) {
+            return response(true, HttpStatus.FOUND, "User by id: " + id, user);
+        } else if (user == null) {
+            return response(false, HttpStatus.NO_CONTENT, "User not found or deleted", (User) null);
+        } else {
+            return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong", (User) null);
+        }
+    }
+
+
+    @GetMapping(path = "user/list")
+    public CommonResponseArray<User> getAll(HttpServletRequest request, Pageable pageable) {
+
+        List<User> products = userService.getAll(pageable);
+
+        MyPagenation myPagenation = managePagenation(request, userService.getPageable(pageable), pageable);
+
+        if (!products.isEmpty()) {
+            return response(true, HttpStatus.OK, "All user list", products, myPagenation);
+        } else if (products.isEmpty()) {
+            return response(true, HttpStatus.NO_CONTENT, "User List is empty", new ArrayList<User>(), myPagenation);
+        } else {
+            return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong", new ArrayList<User>(), myPagenation);
+        }
+
+    }
+
+
+    @PostMapping(path = "user/update")
+    public CommonResponseSingle updateProduct(@RequestBody UserDto userDto, HttpServletRequest request) {
+
+
+        User user = userService.update(userDto);
+
+        if (user != null) {
+            return response(true, HttpStatus.OK, "New user inserted successfully", user);
+        } else if (user == null) {
+            return response(false, HttpStatus.BAD_REQUEST, "Something is wrong with data", (User) null);
+        }
+        return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong with the application", (User) null);
+    }
+
+    @DeleteMapping(path = "user/{id}")
+    public CommonResponseSingle<User> deleteProduct(@PathVariable("id") int id, HttpServletRequest request) {
+
+
+        if (userService.deleteById(id)) {
+            return response(true, HttpStatus.OK, "User by id " + id + " is deleted", (User) null);
+        } else{
+            return response(false, HttpStatus.NOT_FOUND, "User not found or deleted", (User) null);
         }
     }
 

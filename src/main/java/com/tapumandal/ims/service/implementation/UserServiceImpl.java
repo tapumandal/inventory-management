@@ -1,6 +1,9 @@
 package com.tapumandal.ims.service.implementation;
 
 import com.tapumandal.ims.entity.User;
+import com.tapumandal.ims.entity.User;
+import com.tapumandal.ims.entity.dto.UserDto;
+import com.tapumandal.ims.repository.UserRepository;
 import com.tapumandal.ims.repository.UserRepository;
 import com.tapumandal.ims.service.UserService;
 import com.tapumandal.ims.util.MyPagenation;
@@ -9,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -16,49 +20,90 @@ public class UserServiceImpl implements UserService{
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    User user;
+    private User user;
+
+    public UserServiceImpl(){}
+
+    public UserServiceImpl(User user){
+        this.user = user;
+    }
 
 
     @Override
-    public User createUser(User user) {
-        try {
-            if(userRepository.create(user).getId() > 0){
-                return getById(user.getId());
-            }else{
-                return null;
-            }
+    public User createUser(UserDto userDto) {
 
+        User u = new User(userDto);
+        Optional<User> user;
+
+//        try{
+            user = Optional.ofNullable(userRepository.create(u));
+//        }catch (Exception e){
+//            return null;
+//        }
+
+        if(user.isPresent()){
+            return user.get();
+        }else{
+            return null;
+        }
+    }
+
+
+    @Override
+    public User create(UserDto u) {
+        return null;
+    }
+
+    @Override
+    public User update(UserDto userDto) {
+
+        User u = new User(userDto);
+
+        Optional<User> user;
+        try{
+            user = Optional.ofNullable(userRepository.update(u));
         }catch (Exception e){
+            return null;
+        }
+
+        if(user.isPresent()){
+            return user.get();
+        }else{
+            return null;
+        }
+
+    }
+
+    @Override
+    public List<User> getAll(Pageable pageable) {
+        Optional<List<User>> products = Optional.ofNullable(userRepository.getAll(pageable));
+
+        if(products.isPresent()){
+            return products.get();
+        }else{
             return null;
         }
     }
 
     @Override
-    public User create(User activeService) {
-        return null;
-    }
-
-    @Override
-    public User update(User o) {
-        return null;
-    }
-
-    @Override
-    public List getAll(Pageable pageable) {
-
-        return userRepository.getAll(pageable);
-    }
-
-    @Override
     public User getById(int id) {
 
-        return userRepository.getById(id);
+        Optional<User> user = Optional.ofNullable(userRepository.getById(id));
+
+        if(user.isPresent()){
+            return user.get();
+        }else{
+            return null;
+        }
     }
 
     @Override
     public boolean deleteById(int id) {
-        return false;
+        try {
+            return userRepository.delete(id);
+        }catch (Exception ex){
+            return false;
+        }
     }
 
     @Override
@@ -73,22 +118,23 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public boolean isActive(int id) {
-        return false;
+        return user.isActive();
     }
 
     @Override
     public boolean isDeleted(int id) {
-        return false;
+        return user.isDeleted();
     }
 
     @Override
     public MyPagenation getPageable(Pageable pageable) {
-        return null;
+        return userRepository.getPageable(pageable);
     }
-
 
     public boolean isUserExist(String userName){
         return userRepository.isUserExist(userName);
     }
+
+
 
 }

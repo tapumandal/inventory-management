@@ -15,7 +15,7 @@ public class MyUserDetails implements UserDetails {
 
     protected String username;
     protected String password;
-    protected boolean status;
+    protected boolean active;
     protected List<SimpleGrantedAuthority> authrities;
 
     public MyUserDetails(){}
@@ -23,7 +23,7 @@ public class MyUserDetails implements UserDetails {
     public MyUserDetails(User user){
         this.username = user.getEmail();
         this.password = user.getPassword();
-        this.status = user.getStatus();
+        this.active = user.isActive();
         this.authrities = Arrays.stream(user.getRole().split(","))
                                 .map(SimpleGrantedAuthority::new)
                                 .collect(Collectors.toList());

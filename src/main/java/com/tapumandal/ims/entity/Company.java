@@ -2,13 +2,17 @@ package com.tapumandal.ims.entity;
 
 import javax.persistence.*;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.tapumandal.ims.entity.dto.CompanyDto;
+import com.tapumandal.ims.entity.dto.ProductDto;
+import com.tapumandal.ims.entity.dto.UserDto;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "company")
@@ -35,25 +39,32 @@ public class Company {
     @Column(name = "address")
     protected String address;
 
-    @Column(name = "created_at")
-@CreationTimestamp
-    protected Date createdAt;
+    @Column(name = "is_active", columnDefinition = "boolean default 1")
+    private boolean isActive = true;
 
+    @Column(name = "is_deleted", columnDefinition = "boolean default 0")
+    private boolean isDeleted = false;
+
+    @Column(name = "created_at", updatable=false)
+    @CreationTimestamp
+    private Date createdAt;
 
     @Column(name = "updated_at")
     @UpdateTimestamp
-    protected Date updatedAt;
+    private Date updatedAt;
 
-    @Column(name = "is_deleted")
-    protected boolean isDeleted;
+    @OneToMany(mappedBy = "company")
+    private List<User> users;
 
     public Company(){}
 
     public Company(CompanyDto companyDto) {
+        this.id = companyDto.getId();
         this.name = companyDto.getName();
         this.email = companyDto.getEmail();
         this.phone = companyDto.getPhone();
         this.address = companyDto.getAddress();
+
     }
 
     public int getId() {

@@ -27,14 +27,13 @@ public class ProductController extends ControllerHelper<Product> {
     @PostMapping(path = "/create")
     public CommonResponseSingle createProduct(@RequestBody @Valid ProductDto productDto, HttpServletRequest request) {
 
-        Product pro = new Product(productDto);
 
-        Product product = productService.create(pro);
+        Product product = productService.create(productDto);
 
         if (product != null) {
             return response(true, HttpStatus.CREATED, "New product inserted successfully", product);
         } else if (product == null) {
-            return response(false, HttpStatus.NOT_ACCEPTABLE, "Something is wrong with data", (Product) null);
+            return response(false, HttpStatus.BAD_REQUEST, "Something is wrong please contact", (Product) null);
         }
         return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong with the application", (Product) null);
     }
@@ -74,9 +73,8 @@ public class ProductController extends ControllerHelper<Product> {
     @PostMapping(path = "/update")
     public CommonResponseSingle updateProduct(@RequestBody ProductDto productDto, HttpServletRequest request) {
 
-        Product pro = new Product(productDto);
 
-        Product product = productService.update(pro);
+        Product product = productService.update(productDto);
 
         if (product != null) {
             return response(true, HttpStatus.OK, "New product inserted successfully", product);

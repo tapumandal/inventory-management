@@ -1,6 +1,7 @@
 package com.tapumandal.ims.service.implementation;
 
 import com.tapumandal.ims.entity.Measurement;
+import com.tapumandal.ims.entity.dto.MeasurementDto;
 import com.tapumandal.ims.repository.MeasurementRepository;
 import com.tapumandal.ims.repository.ProductRepository;
 import com.tapumandal.ims.service.MeasurementService;
@@ -28,7 +29,10 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public Measurement create(Measurement meas) {
+    public Measurement create(MeasurementDto measurementDto) {
+
+        Measurement meas = new Measurement(measurementDto);
+
         Optional<Measurement> measurement;
 
         try{
@@ -45,7 +49,9 @@ public class MeasurementServiceImpl implements MeasurementService {
     }
 
     @Override
-    public Measurement update(Measurement meas) {
+    public Measurement update(MeasurementDto measurementDto) {
+
+        Measurement meas = new Measurement(measurementDto);
 
         Optional<Measurement> measurement;
         try{
