@@ -17,13 +17,11 @@ public class MyUserDetailsService implements UserDetailsService {
     @Autowired
     UserRepositoryImpl userRepository;
 
-    @Autowired
-    User user;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         
-        user = userRepository.getByKeyAndValue("email", username).get(0);
+        User user = userRepository.getByKeyAndValue("email", username).get(0);
         System.out.println(new Gson().toJson(new MyUserDetails(user).getAuthorities()));
         return new MyUserDetails(user);
     }

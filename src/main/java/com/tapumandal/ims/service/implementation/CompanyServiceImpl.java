@@ -9,48 +9,95 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
 
     @Autowired
     CompanyRepository companyRepository;
-    @Autowired
-    Company company;
+
+    private Company company;
+
+    public CompanyServiceImpl(){}
+
+    public CompanyServiceImpl(Company company){
+        this.company = company;
+    }
 
     @Override
     public Company create(CompanyDto companyDto) {
 
-//        try {
-//            if(companyRepository.create(company)){
-//                return company;
-//            }
-//        }catch (Exception e){
-//            return null;
-//        }
-        return null;
+        Company pro = new Company(companyDto);
+        Optional<Company> company;
+
+        try{
+            int companyId = companyRepository.create(pro);
+            company = Optional.ofNullable(companyRepository.getById(companyId));
+        }catch (Exception e){
+            return null;
+        }
+
+        if(company.isPresent()){
+            return company.get();
+        }else{
+            return null;
+        }
     }
 
     @Override
     public Company update(CompanyDto companyDto) {
-        return null;
+
+
+        Company pro = new Company(companyDto);
+
+        Optional<Company> company;
+        try{
+            int proId = companyRepository.update(pro);
+            company = Optional.ofNullable(companyRepository.getById(proId));
+        }catch (Exception e){
+            return null;
+        }
+
+        if(company.isPresent()){
+            return company.get();
+        }else{
+            return null;
+        }
+
     }
 
     @Override
-    public ArrayList<Company> getAll(Pageable pageable) {
-        return null;
+    public List<Company> getAll(Pageable pageable) {
+        Optional<List<Company>> companys = Optional.ofNullable(companyRepository.getAll(pageable));
+
+        if(companys.isPresent()){
+            return companys.get();
+        }else{
+            return null;
+        }
     }
 
     @Override
     public Company getById(int id) {
-        return null;
+
+        Optional<Company> company = Optional.ofNullable(companyRepository.getById(id));
+
+        if(company.isPresent()){
+            return company.get();
+        }else{
+            return null;
+        }
     }
 
     @Override
     public boolean deleteById(int id) {
-        return false;
+        try {
+            return companyRepository.delete(id);
+        }catch (Exception ex){
+            return false;
+        }
     }
 
     @Override
@@ -65,16 +112,28 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public boolean isActive(int id) {
-        return false;
+        return company.isActive();
     }
 
     @Override
     public boolean isDeleted(int id) {
-        return false;
+        return company.isDeleted();
     }
 
     @Override
     public MyPagenation getPageable(Pageable pageable) {
-        return null;
+        return companyRepository.getPageable(pageable);
     }
+
+    @Override
+    public boolean isCompanyExist(int id) {
+
+        Optional<Company> company = Optional.ofNullable(companyRepository.getById(id));
+        if(company.isPresent()){
+            return true;
+        }
+        return false;
+    }
+
+
 }

@@ -28,9 +28,6 @@ public class UserRepositoryImpl implements UserRepository {
     @Autowired
     EntityManager entityManager;
 
-    @Autowired
-    User user;
-
     @Override
     public Session getSession() {
 
@@ -39,18 +36,16 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public User create(User user) {
+    public int create(User user) {
 
         getSession().save(user);
         getSession().flush();
-//        getSession().clear();
-//        return null;
-//        return user;
-        return getById(user.getId());
+        getSession().clear();
+        return user.getId();
     }
 
     @Override
-    public User update(User user) {
+    public int update(User user) {
 
         Optional<User> proTmp = Optional.ofNullable(getById(user.getId()));
         getSession().clear();
@@ -59,9 +54,9 @@ public class UserRepositoryImpl implements UserRepository {
             getSession().update(user);
             getSession().flush();
             getSession().clear();
-            return getById(user.getId());
+            return user.getId();
         }else{
-            return null;
+            return 0;
         }
     }
 

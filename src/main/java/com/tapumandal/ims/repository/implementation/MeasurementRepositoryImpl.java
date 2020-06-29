@@ -32,28 +32,21 @@ public class MeasurementRepositoryImpl implements MeasurementRepository {
 
 
     @Override
-    public Measurement create(Measurement measurement) {
+    public int create(Measurement measurement) {
 
         getSession().saveOrUpdate(measurement);
         getSession().flush();
         getSession().clear();
-        return getById(measurement.getId());
+        return measurement.getId();
     }
 
     @Override
-    public Measurement update(Measurement measurement) {
+    public int update(Measurement measurement) {
 
-        Optional<Measurement> proTmp = Optional.ofNullable(getById(measurement.getId()));
+        getSession().update(measurement);
+        getSession().flush();
         getSession().clear();
-
-        if(proTmp.isPresent()){
-            getSession().update(measurement);
-            getSession().flush();
-            getSession().clear();
-            return getById(measurement.getId());
-        }else{
-            return null;
-        }
+        return measurement.getId();
     }
 
     @Override

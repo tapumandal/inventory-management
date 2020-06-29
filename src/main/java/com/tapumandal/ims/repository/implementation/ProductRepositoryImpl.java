@@ -30,29 +30,21 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 
     @Override
-    public Product create(Product product) {
+    public int create(Product product) {
 
         getSession().saveOrUpdate(product);
-//        getSession().flush();
-//        getSession().clear();
-        return product;
-//        return product;
+        getSession().flush();
+        getSession().clear();
+        return product.getId();
     }
 
     @Override
-    public Product update(Product product) {
+    public int update(Product product) {
 
-        Optional<Product> proTmp = Optional.ofNullable(getById(product.getId()));
+        getSession().update(product);
+        getSession().flush();
         getSession().clear();
-
-        if(proTmp.isPresent()){
-            getSession().update(product);
-            getSession().flush();
-            getSession().clear();
-            return getById(product.getId());
-        }else{
-            return null;
-        }
+        return product.getId();
     }
 
     @Override

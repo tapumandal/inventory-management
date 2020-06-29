@@ -1,10 +1,12 @@
 package com.tapumandal.ims.service.implementation;
 
+import com.tapumandal.ims.entity.Company;
 import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.entity.dto.UserDto;
 import com.tapumandal.ims.repository.UserRepository;
 import com.tapumandal.ims.repository.UserRepository;
+import com.tapumandal.ims.service.CompanyService;
 import com.tapumandal.ims.service.UserService;
 import com.tapumandal.ims.util.MyPagenation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class UserServiceImpl implements UserService{
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    CompanyService companyService;
+
     private User user;
 
     public UserServiceImpl(){}
@@ -32,14 +37,25 @@ public class UserServiceImpl implements UserService{
     @Override
     public User createUser(UserDto userDto) {
 
-        User u = new User(userDto);
-        Optional<User> user;
+        User u;
 
-//        try{
-            user = Optional.ofNullable(userRepository.create(u));
-//        }catch (Exception e){
-//            return null;
-//        }
+        if(userDto.getCompany().getId() == 0){
+            Company company = new Company();
+            company.setId(companyService.create(userDto.getCompany()).getId());
+            u = new User(userDto);
+            u.setCompany(company);
+            u.setRole("ADMIN");
+        }else{
+            u = new User(userDto);
+        }
+
+        Optional<User> user;
+        try{
+            int userId = userRepository.create(u);
+            user = Optional.ofNullable(userRepository.getById(userId));
+        }catch (Exception e){
+            return null;
+        }
 
         if(user.isPresent()){
             return user.get();
@@ -61,7 +77,8 @@ public class UserServiceImpl implements UserService{
 
         Optional<User> user;
         try{
-            user = Optional.ofNullable(userRepository.update(u));
+            int userId = userRepository.update(u);
+            user = Optional.ofNullable(userRepository.getById(userId));
         }catch (Exception e){
             return null;
         }

@@ -27,4 +27,5 @@ public interface Service<ReqEntity, ResEntity> {
     public boolean isDeleted(int id);
 
     MyPagenation getPageable(Pageable pageable);
+
 }

@@ -39,6 +39,8 @@ public class UserController extends ControllerHelper {
     JwtUtil jwtUtil;
     @Autowired
     UserService userService;
+    @Autowired
+    CompanyService companyService;
 
     @PostMapping("/authenticate")
     public ResponseEntity<Jwt> authenticate(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
@@ -64,12 +66,11 @@ public class UserController extends ControllerHelper {
     @PostMapping(path = "/registration")
     public CommonResponseSingle userRegistration(@RequestBody @Valid UserDto userDto, HttpServletRequest request){
 
-        System.out.println(new Gson().toJson(userDto));
-
         if(!userService.isUserExist(userDto.getEmail())){
+            if(userDto.getCompany().getId() != 0){
+                return response(false, HttpStatus.BAD_REQUEST, "Please check your company information.", (User) null);
+            }
             User user = userService.createUser(userDto);
-
-            System.out.println(new Gson().toJson(user));
 
             if(user != null){
                 return response(true, HttpStatus.CREATED, "User & Company registration successful", user);
@@ -82,6 +83,30 @@ public class UserController extends ControllerHelper {
         }
     }
 
+    @PostMapping(path = "/user/create")
+    public CommonResponseSingle userCreate(@RequestBody @Valid UserDto userDto, HttpServletRequest request){
+
+        if(!companyService.isCompanyExist(userDto.getCompany().getId())){
+            return response(false, HttpStatus.NOT_ACCEPTABLE, "Company is not exist", (User) null);
+        }
+        if(!userService.isUserExist(userDto.getEmail())){
+
+            if(userDto.getCompany().getId() == 0){
+                return response(false, HttpStatus.BAD_REQUEST, "Please select a company.", (User) null);
+            }
+
+            User user = userService.createUser(userDto);
+
+            if(user != null){
+                return response(true, HttpStatus.CREATED, "User & Company registration successful", user);
+            }else{
+                return response(false, HttpStatus.BAD_REQUEST, "Something is wrong please contact.", (User) null);
+            }
+
+        }else{
+            return response(false, HttpStatus.NOT_ACCEPTABLE, "User already exist", (User) null);
+        }
+    }
 
     @GetMapping(path = "user/{id}")
     public CommonResponseSingle<User> getProduct(@PathVariable("id") int id, HttpServletRequest request) {

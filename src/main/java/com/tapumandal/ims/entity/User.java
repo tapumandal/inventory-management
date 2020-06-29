@@ -4,19 +4,15 @@ import java.sql.Date;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.tapumandal.ims.annotation.CustomCompanySerializer;
 import com.tapumandal.ims.entity.dto.UserDto;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
-import org.hibernate.validator.constraints.UniqueElements;
-import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name="user")
-@Component
-@DynamicUpdate
 public class User {
 
     @Id
@@ -62,21 +58,26 @@ public class User {
     private Date updatedAt;
 
 
-    @ManyToOne(cascade=CascadeType.ALL)
+//    @ManyToOne(cascade=CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id")
     @Where(clause = "company_is_deleted = false AND company_is_active = true" )
+    @JsonSerialize(using = CustomCompanySerializer.class)
     private Company company;
 
     public User(){};
 
     public User(UserDto userDto) {
-        this.id = userDto.getId();
+
         this.name = userDto.getName();
         this.email = userDto.getEmail();
         this.phone = userDto.getPhone();
         this.password = userDto.getPassword();
         this.address = userDto.getAddress();
         this.workTitle = userDto.getWork_title();
+        this.role = userDto.getRole();
+        this.isActive = userDto.isActive();
+        this.isDeleted = userDto.isDeleted();
 
         if(userDto.getCompany() != null){
             this.company = new Company(userDto.getCompany());
