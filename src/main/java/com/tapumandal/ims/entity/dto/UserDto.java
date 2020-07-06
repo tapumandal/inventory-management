@@ -43,9 +43,9 @@ public class UserDto{
 
     protected String role;
 
-    protected boolean is_active;
+    protected boolean is_active = true;
 
-    protected boolean is_deleted;
+    protected boolean is_deleted = false;
 
     @Nullable
     private CompanyDto company;

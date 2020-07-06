@@ -27,6 +27,7 @@ public class CompanyController extends ControllerHelper<Company> {
     @PostMapping(path = "/create")
     public CommonResponseSingle createCompany(@RequestBody @Valid CompanyDto companyDto, HttpServletRequest request) {
 
+        storeUserDetails(request);
 
         Company company = companyService.create(companyDto);
 
@@ -41,6 +42,8 @@ public class CompanyController extends ControllerHelper<Company> {
     @GetMapping(path = "/{id}")
     public CommonResponseSingle<Company> getCompany(@PathVariable("id") int id, HttpServletRequest request) {
 
+        storeUserDetails(request);
+
         Company company = companyService.getById(id);
 
         if (company != null) {
@@ -54,6 +57,8 @@ public class CompanyController extends ControllerHelper<Company> {
 
     @GetMapping(path = "/list")
     public CommonResponseArray<Company> getAll(HttpServletRequest request, Pageable pageable) {
+
+        storeUserDetails(request);
 
         List<Company> companys = companyService.getAll(pageable);
 
@@ -73,6 +78,7 @@ public class CompanyController extends ControllerHelper<Company> {
     @PostMapping(path = "/update")
     public CommonResponseSingle updateCompany(@RequestBody CompanyDto companyDto, HttpServletRequest request) {
 
+        storeUserDetails(request);
 
         Company company = companyService.update(companyDto);
 
@@ -87,6 +93,7 @@ public class CompanyController extends ControllerHelper<Company> {
     @DeleteMapping(path = "/{id}")
     public CommonResponseSingle<Company> deleteCompany(@PathVariable("id") int id, HttpServletRequest request) {
 
+        storeUserDetails(request);
 
         if (companyService.deleteById(id)) {
             return response(true, HttpStatus.OK, "Company by id " + id + " is deleted", (Company) null);

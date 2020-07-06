@@ -1,6 +1,10 @@
 package com.tapumandal.ims.filters;
 
+import com.google.gson.Gson;
+import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.service.MyUserDetailsService;
+import com.tapumandal.ims.service.UserService;
+import com.tapumandal.ims.util.ApplicationPreferences;
 import com.tapumandal.ims.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.prefs.Preferences;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -24,6 +29,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     MyUserDetailsService myUserDetailsService;
+
+
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {

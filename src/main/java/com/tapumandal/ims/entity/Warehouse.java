@@ -1,6 +1,7 @@
 package com.tapumandal.ims.entity;
 
 import com.tapumandal.ims.entity.dto.CompanyDto;
+import com.tapumandal.ims.util.ApplicationPreferences;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.stereotype.Component;
@@ -20,30 +21,98 @@ public class Warehouse {
     @Column(name = "name")
     protected String name;
 
-    @Column(name = "url")
-    protected String url;
-
-    @Column(name = "email", unique = true)
-    protected String email;
-
     @Column(name = "phone")
     protected String phone;
 
     @Column(name = "address")
     protected String address;
 
-    @Column(name = "is_active")
-    protected boolean isActive;
+    @Column(name = "company_id", updatable = false)
+    protected int companyId = ApplicationPreferences.getUser().getCompany().getId();
 
-    @Column(name = "is_deleted")
-    protected boolean isDeleted;
+    @Column(name = "is_active", columnDefinition = "boolean default 1")
+    private boolean isActive = true;
 
-    @Column(name = "created_at")
+    @Column(name = "is_deleted", columnDefinition = "boolean default 0")
+    private boolean isDeleted = false;
+
+    @Column(name = "created_at", updatable=false)
     @CreationTimestamp
-    protected Date createdAt;
+    private Date createdAt;
 
     @Column(name = "updated_at")
     @UpdateTimestamp
-    protected Date updatedAt;
+    private Date updatedAt;
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }

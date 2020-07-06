@@ -43,6 +43,7 @@ public class User {
     @Column(name = "role")
     protected String role;
 
+
     @Column(name = "is_active", columnDefinition = "boolean default 1")
     private boolean isActive = true;
 
@@ -57,8 +58,8 @@ public class User {
     @UpdateTimestamp
     private Date updatedAt;
 
+    private String userName;
 
-//    @ManyToOne(cascade=CascadeType.PERSIST)
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id")
     @Where(clause = "company_is_deleted = false AND company_is_active = true" )
@@ -78,6 +79,8 @@ public class User {
         this.role = userDto.getRole();
         this.isActive = userDto.isActive();
         this.isDeleted = userDto.isDeleted();
+
+        this.userName = userDto.getEmail();
 
         if(userDto.getCompany() != null){
             this.company = new Company(userDto.getCompany());
@@ -107,6 +110,7 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+        this.userName = email;
     }
 
     public boolean isEmailVerified() {
@@ -195,5 +199,18 @@ public class User {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public String getUsername(){
+        return this.userName;
+    }
+
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

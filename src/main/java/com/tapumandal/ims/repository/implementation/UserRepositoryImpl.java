@@ -5,6 +5,7 @@ import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.entity.User;
 
 import com.tapumandal.ims.repository.UserRepository;
+import com.tapumandal.ims.util.ApplicationPreferences;
 import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -20,10 +21,7 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public class UserRepositoryImpl implements UserRepository {
-
-//    @Autowired
-//    SessionFactory session;
+public class UserRepositoryImpl  implements UserRepository {
 
     @Autowired
     EntityManager entityManager;
@@ -87,7 +85,7 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     private Query getQuery(){
-        String query = "FROM User P WHERE P.isDeleted = 0";
+        String query = "FROM User U WHERE U.isDeleted = 0 AND U.companyId = "+ApplicationPreferences.getUser().getCompany().getId();
         Query resQuery =  getSession().createQuery(query);
 
         return resQuery;
@@ -96,13 +94,14 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getById(int id) {
 
-        String query = "FROM User P WHERE P.id = "+id+" AND P.isDeleted = 0";
+//        String query = "FROM User U WHERE U.id = "+id+" AND U.isDeleted = 0 AND U.companyId = "+ApplicationPreferences.getUser().getCompany().getId();
+        String query = "FROM User U WHERE U.id = "+id+" AND U.isDeleted = 0";
         return (User) getSession().createQuery(query).uniqueResult();
     }
 
     public User getByUserName(String userName) {
 
-        String query = "FROM User P WHERE P.email = '"+userName+"' AND P.isDeleted = 0";
+        String query = "FROM User U WHERE U.email = '"+userName+"' AND U.isDeleted = 0";
         return (User) getSession().createQuery(query).uniqueResult();
     }
 

@@ -8,6 +8,7 @@ import com.tapumandal.ims.annotation.CustomMeasurementSerializer;
 import com.tapumandal.ims.entity.Measurement;
 import com.tapumandal.ims.entity.dto.MeasurementDto;
 import com.tapumandal.ims.entity.dto.ProductDto;
+import com.tapumandal.ims.util.ApplicationPreferences;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -32,6 +33,10 @@ public class Product {
 
     @Column(name = "price_per_unit")
     private String pricePerUnit;
+
+    @Column(name = "company_id", updatable = false)
+    protected int companyId = ApplicationPreferences.getUser().getCompany().getId();
+//    protected int companyId = 0;
 
     @Column(name = "is_active", columnDefinition = "boolean default 1")
     private boolean isActive = true;
@@ -136,6 +141,14 @@ public class Product {
 
     public void setMeasurement(List<Measurement> measurement) {
         this.measurement = measurement;
+    }
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
     }
 }
 

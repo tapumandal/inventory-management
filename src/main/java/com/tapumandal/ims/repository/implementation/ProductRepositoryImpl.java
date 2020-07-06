@@ -3,6 +3,7 @@ package com.tapumandal.ims.repository.implementation;
 import com.tapumandal.ims.entity.Measurement;
 import com.tapumandal.ims.entity.Product;
 import com.tapumandal.ims.repository.ProductRepository;
+import com.tapumandal.ims.util.ApplicationPreferences;
 import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -74,7 +75,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     private Query getQuery(){
-        String query = "FROM Product P WHERE P.isDeleted = 0";
+        String query = "FROM Product P WHERE P.isDeleted = 0 AND P.companyId = "+ ApplicationPreferences.getUser().getCompany().getId();
         Query resQuery =  getSession().createQuery(query);
 
         return resQuery;
@@ -83,7 +84,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Product getById(int id) {
 
-        String query = "FROM Product P WHERE P.id = "+id+" AND P.isDeleted = 0";
+        String query = "FROM Product P WHERE P.id = "+id+" AND P.isDeleted = 0 AND P.companyId = "+ApplicationPreferences.getUser().getCompany().getId();
         return (Product) getSession().createQuery(query).uniqueResult();
     }
 

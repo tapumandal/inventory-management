@@ -1,5 +1,6 @@
 package com.tapumandal.ims.service.implementation;
 
+import com.google.gson.Gson;
 import com.tapumandal.ims.entity.Company;
 import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.entity.User;
@@ -8,6 +9,8 @@ import com.tapumandal.ims.repository.UserRepository;
 import com.tapumandal.ims.repository.UserRepository;
 import com.tapumandal.ims.service.CompanyService;
 import com.tapumandal.ims.service.UserService;
+import com.tapumandal.ims.util.ApplicationPreferences;
+import com.tapumandal.ims.util.ControllerHelper;
 import com.tapumandal.ims.util.MyPagenation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -39,7 +42,7 @@ public class UserServiceImpl implements UserService{
 
         User u;
 
-        if(userDto.getCompany().getId() == 0){
+        if(userDto.getCompany() != null){
             Company company = new Company();
             company.setId(companyService.create(userDto.getCompany()).getId());
             u = new User(userDto);
@@ -52,6 +55,9 @@ public class UserServiceImpl implements UserService{
         Optional<User> user;
         try{
             int userId = userRepository.create(u);
+
+            applicationPreferences.saveUserByUsername(u.getUsername());
+
             user = Optional.ofNullable(userRepository.getById(userId));
         }catch (Exception e){
             return null;
@@ -102,9 +108,11 @@ public class UserServiceImpl implements UserService{
         }
     }
 
+    @Autowired
+    ApplicationPreferences applicationPreferences;
+
     @Override
     public User getById(int id) {
-
         Optional<User> user = Optional.ofNullable(userRepository.getById(id));
 
         if(user.isPresent()){
@@ -112,6 +120,7 @@ public class UserServiceImpl implements UserService{
         }else{
             return null;
         }
+
     }
 
     @Override
@@ -124,8 +133,10 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public User getByValue(String kye, String value) {
-        return null;
+    public User getByValue(String key, String value) {
+        User user = userRepository.getByKeyAndValue("email", value).get(0);
+
+        return user;
     }
 
     @Override
