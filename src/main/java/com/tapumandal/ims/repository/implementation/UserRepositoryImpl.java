@@ -5,6 +5,7 @@ import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.entity.User;
 
 import com.tapumandal.ims.repository.UserRepository;
+import com.tapumandal.ims.util.ApplicationPreferences;
 import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -20,16 +21,10 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public class UserRepositoryImpl implements UserRepository {
-
-//    @Autowired
-//    SessionFactory session;
+public class UserRepositoryImpl  implements UserRepository {
 
     @Autowired
     EntityManager entityManager;
-
-    @Autowired
-    User user;
 
     @Override
     public Session getSession() {
@@ -39,18 +34,16 @@ public class UserRepositoryImpl implements UserRepository {
 
 
     @Override
-    public User create(User user) {
+    public int create(User user) {
 
         getSession().save(user);
         getSession().flush();
-//        getSession().clear();
-//        return null;
-//        return user;
-        return getById(user.getId());
+        getSession().clear();
+        return user.getId();
     }
 
     @Override
-    public User update(User user) {
+    public int update(User user) {
 
         Optional<User> proTmp = Optional.ofNullable(getById(user.getId()));
         getSession().clear();
@@ -59,15 +52,14 @@ public class UserRepositoryImpl implements UserRepository {
             getSession().update(user);
             getSession().flush();
             getSession().clear();
-            return getById(user.getId());
+            return user.getId();
         }else{
-            return null;
+            return 0;
         }
     }
 
     @Override
     public List<User> getAll(Pageable pageable) {
-
 
         Query resQuery = getQuery();
 
@@ -91,23 +83,10 @@ public class UserRepositoryImpl implements UserRepository {
         return myPagenation;
     }
 
-    private Query getQuery(){
-        String query = "FROM User P WHERE P.isDeleted = 0";
-        Query resQuery =  getSession().createQuery(query);
-
-        return resQuery;
-    }
-
-    @Override
-    public User getById(int id) {
-
-        String query = "FROM User P WHERE P.id = "+id+" AND P.isDeleted = 0";
-        return (User) getSession().createQuery(query).uniqueResult();
-    }
 
     public User getByUserName(String userName) {
 
-        String query = "FROM User P WHERE P.email = '"+userName+"' AND P.isDeleted = 0";
+        String query = "FROM User U WHERE U.email = '"+userName+"' AND U.isDeleted = 0";
         return (User) getSession().createQuery(query).uniqueResult();
     }
 
@@ -144,5 +123,20 @@ public class UserRepositoryImpl implements UserRepository {
 
         return false;
 
+    }
+
+
+    private Query getQuery(){
+        String query = "FROM User U WHERE U.isDeleted = 0 AND U.companyId = "+ApplicationPreferences.getUser().getCompany().getId();
+        Query resQuery =  getSession().createQuery(query);
+
+        return resQuery;
+    }
+
+    @Override
+    public User getById(int id) {
+
+        String query = "FROM User U WHERE U.id = "+id+" AND U.isDeleted = 0 AND U.company.id = "+ApplicationPreferences.getUser().getCompany().getId();
+        return (User) getSession().createQuery(query).uniqueResult();
     }
 }

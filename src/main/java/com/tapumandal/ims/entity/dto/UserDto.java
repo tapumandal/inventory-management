@@ -40,6 +40,13 @@ public class UserDto{
     @Size(min=3, max = 32, message = "Work Title is not valid")
     protected String work_title;
 
+
+    protected String role;
+
+    protected boolean is_active = true;
+
+    protected boolean is_deleted = false;
+
     @Nullable
     private CompanyDto company;
 
@@ -107,5 +114,27 @@ public class UserDto{
         this.company = company;
     }
 
+    public String getRole() {
+        return role;
+    }
 
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public boolean isActive() {
+        return is_active;
+    }
+
+    public void setIs_active(boolean is_active) {
+        this.is_active = is_active;
+    }
+
+    public boolean isDeleted() {
+        return is_deleted;
+    }
+
+    public void setIs_deleted(boolean is_deleted) {
+        this.is_deleted = is_deleted;
+    }
 }

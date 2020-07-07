@@ -27,6 +27,7 @@ public class ProductController extends ControllerHelper<Product> {
     @PostMapping(path = "/create")
     public CommonResponseSingle createProduct(@RequestBody @Valid ProductDto productDto, HttpServletRequest request) {
 
+        storeUserDetails(request);
 
         Product product = productService.create(productDto);
 
@@ -41,6 +42,8 @@ public class ProductController extends ControllerHelper<Product> {
     @GetMapping(path = "/{id}")
     public CommonResponseSingle<Product> getProduct(@PathVariable("id") int id, HttpServletRequest request) {
 
+        storeUserDetails(request);
+
         Product product = productService.getById(id);
 
         if (product != null) {
@@ -54,6 +57,8 @@ public class ProductController extends ControllerHelper<Product> {
 
     @GetMapping(path = "/list")
     public CommonResponseArray<Product> getAll(HttpServletRequest request, Pageable pageable) {
+
+        storeUserDetails(request);
 
         List<Product> products = productService.getAll(pageable);
 
@@ -73,6 +78,7 @@ public class ProductController extends ControllerHelper<Product> {
     @PostMapping(path = "/update")
     public CommonResponseSingle updateProduct(@RequestBody ProductDto productDto, HttpServletRequest request) {
 
+        storeUserDetails(request);
 
         Product product = productService.update(productDto);
 
@@ -87,6 +93,7 @@ public class ProductController extends ControllerHelper<Product> {
     @DeleteMapping(path = "/{id}")
     public CommonResponseSingle<Product> deleteProduct(@PathVariable("id") int id, HttpServletRequest request) {
 
+        storeUserDetails(request);
 
         if (productService.deleteById(id)) {
             return response(true, HttpStatus.OK, "Product by id " + id + " is deleted", (Product) null);

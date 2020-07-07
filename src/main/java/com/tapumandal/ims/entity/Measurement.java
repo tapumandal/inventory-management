@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.tapumandal.ims.annotation.CustomProductSerializer;
 import com.tapumandal.ims.entity.dto.MeasurementDto;
 import com.tapumandal.ims.entity.dto.ProductDto;
+import com.tapumandal.ims.util.ApplicationPreferences;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
@@ -33,6 +34,9 @@ public class Measurement {
 
     @Column(name = "unit_per_package")
     private String unitPerPackage;
+
+    @Column(name = "company_id", updatable = false)
+    protected int companyId = ApplicationPreferences.getUser().getCompany().getId();
 
     @Column(name = "is_active", columnDefinition = "boolean default 1")
     private boolean isActive = true;
@@ -149,5 +153,14 @@ public class Measurement {
     }
     public void setProducts(List<Product> products) {
         this.products = products;
+    }
+
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
     }
 }

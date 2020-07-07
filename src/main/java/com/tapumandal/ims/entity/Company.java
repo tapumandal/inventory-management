@@ -2,13 +2,13 @@ package com.tapumandal.ims.entity;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.tapumandal.ims.annotation.CustomProductSerializer;
+import com.tapumandal.ims.annotation.CustomUserSerializer;
 import com.tapumandal.ims.entity.dto.CompanyDto;
-import com.tapumandal.ims.entity.dto.ProductDto;
-import com.tapumandal.ims.entity.dto.UserDto;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.stereotype.Component;
 
 import java.sql.Date;
@@ -30,7 +30,7 @@ public class Company {
     @Column(name = "url")
     protected String url;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email")
     protected String email;
 
     @Column(name = "phone")
@@ -53,7 +53,8 @@ public class Company {
     @UpdateTimestamp
     private Date updatedAt;
 
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company", fetch = FetchType.EAGER)
+    @JsonSerialize(using = CustomUserSerializer.class)
     private List<User> users;
 
     public Company(){}
@@ -138,4 +139,21 @@ public class Company {
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
     }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public List<User> getUsers() {
+        return users;
+    }
+
+    public void setUsers(List<User> users) {
+        this.users = users;
+    }
+
 }

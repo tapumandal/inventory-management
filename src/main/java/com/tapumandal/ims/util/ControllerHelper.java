@@ -1,6 +1,7 @@
 package com.tapumandal.ims.util;
 
 import com.tapumandal.ims.service.ProductService;
+import com.tapumandal.ims.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,13 @@ public class ControllerHelper<Entity> {
 
     @Autowired
     private   CommonResponseSingle commonResponseSingle;
+
+    @Autowired
+    ApplicationPreferences applicationPreferences;
+
+    @Autowired
+    JwtUtil jwt;
+
 
     protected CommonResponseSingle response(boolean action, HttpStatus status, String message, Entity data){
 
@@ -36,6 +44,7 @@ public class ControllerHelper<Entity> {
 
         return commonResponseArray;
     }
+
     protected MyPagenation managePagenation(HttpServletRequest request, MyPagenation pagenation, Pageable pageable) {
 
         int totalPage = (int) Math.ceil((float)pagenation.getTotalElement()/(float)pageable.getPageSize());
@@ -65,6 +74,20 @@ public class ControllerHelper<Entity> {
         pagenation.setPreviousPageUrl(prePage);
 
         return pagenation;
+    }
+
+    public void storeUserDetails(HttpServletRequest request){
+
+        String authorizationHeader = request.getHeader("Authorization");
+        System.out.println(authorizationHeader);
+        String token = authorizationHeader.substring(7);
+        String username = getUserNameJWT(token);
+        System.out.println(username);
+        applicationPreferences.saveUserByUsername(username);
+    }
+
+    private String getUserNameJWT(String token) {
+        return jwt.extractUsername(token);
     }
 
 }

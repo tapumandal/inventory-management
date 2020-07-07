@@ -4,19 +4,15 @@ import java.sql.Date;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.tapumandal.ims.annotation.CustomCompanySerializer;
 import com.tapumandal.ims.entity.dto.UserDto;
 import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
-import org.hibernate.validator.constraints.UniqueElements;
-import org.springframework.stereotype.Component;
 
 @Entity
 @Table(name="user")
-@Component
-@DynamicUpdate
 public class User {
 
     @Id
@@ -47,6 +43,7 @@ public class User {
     @Column(name = "role")
     protected String role;
 
+
     @Column(name = "is_active", columnDefinition = "boolean default 1")
     private boolean isActive = true;
 
@@ -61,22 +58,29 @@ public class User {
     @UpdateTimestamp
     private Date updatedAt;
 
+    private String userName;
 
-    @ManyToOne(cascade=CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id")
     @Where(clause = "company_is_deleted = false AND company_is_active = true" )
+    @JsonSerialize(using = CustomCompanySerializer.class)
     private Company company;
 
     public User(){};
 
     public User(UserDto userDto) {
-        this.id = userDto.getId();
+
         this.name = userDto.getName();
         this.email = userDto.getEmail();
         this.phone = userDto.getPhone();
         this.password = userDto.getPassword();
         this.address = userDto.getAddress();
         this.workTitle = userDto.getWork_title();
+        this.role = userDto.getRole();
+        this.isActive = userDto.isActive();
+        this.isDeleted = userDto.isDeleted();
+
+        this.userName = userDto.getEmail();
 
         if(userDto.getCompany() != null){
             this.company = new Company(userDto.getCompany());
@@ -106,6 +110,7 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+        this.userName = email;
     }
 
     public boolean isEmailVerified() {
@@ -194,5 +199,18 @@ public class User {
 
     public void setCompany(Company company) {
         this.company = company;
+    }
+
+    public String getUsername(){
+        return this.userName;
+    }
+
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 }

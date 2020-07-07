@@ -36,7 +36,8 @@ public class MeasurementServiceImpl implements MeasurementService {
         Optional<Measurement> measurement;
 
         try{
-            measurement = Optional.ofNullable(measurementRepository.create(meas));
+            int measurementId = measurementRepository.create(meas);
+            measurement = Optional.ofNullable(measurementRepository.getById(measurementId));
         }catch (Exception e){
             return null;
         }
@@ -55,7 +56,8 @@ public class MeasurementServiceImpl implements MeasurementService {
 
         Optional<Measurement> measurement;
         try{
-            measurement = Optional.ofNullable(measurementRepository.update(meas));
+            int measurementId = measurementRepository.update(meas);
+            measurement = Optional.ofNullable(measurementRepository.getById(measurementId));
         }catch (Exception e){
             return null;
         }

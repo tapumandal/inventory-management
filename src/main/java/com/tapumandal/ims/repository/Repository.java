@@ -10,9 +10,9 @@ public interface Repository<Entity> {
 
     public Session getSession();
 
-    public Entity create(Entity o);
+    public int create(Entity o);
 
-    public Entity update(Entity o);
+    public int update(Entity o);
 
     public List<Entity> getAll(Pageable pageable);
 

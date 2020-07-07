@@ -32,17 +32,18 @@ public class ProductServiceImpl implements ProductService {
         Product pro = new Product(productDto);
         Optional<Product> product;
 
-//        try{
-            product = Optional.ofNullable(productRepository.create(pro));
-//        }catch (Exception e){
-//            return null;
-//        }
-//
-//        if(product.isPresent()){
-//            return product.get();
-//        }else{
+        try{
+            int productId = productRepository.create(pro);
+            product = Optional.ofNullable(productRepository.getById(productId));
+        }catch (Exception e){
+            return null;
+        }
+
+        if(product.isPresent()){
             return product.get();
-//        }
+        }else{
+            return null;
+        }
     }
 
     @Override
@@ -53,7 +54,8 @@ public class ProductServiceImpl implements ProductService {
 
         Optional<Product> product;
         try{
-            product = Optional.ofNullable(productRepository.update(pro));
+            int proId = productRepository.update(pro);
+            product = Optional.ofNullable(productRepository.getById(proId));
         }catch (Exception e){
             return null;
         }

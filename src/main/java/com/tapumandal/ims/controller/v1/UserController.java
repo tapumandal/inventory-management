@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.prefs.Preferences;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -47,7 +48,7 @@ public class UserController extends ControllerHelper {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
             );
-        } catch (BadCredentialsException e){
+        } catch (BadCredentialsException e) {
             throw new Exception("Incorrect username or password", e);
         }
 
@@ -55,36 +56,57 @@ public class UserController extends ControllerHelper {
 
         return ResponseEntity.ok(new Jwt(jwtUtil.generateToken(userDetails)));
     }
-    
+
     @GetMapping("/")
     public String home() {
         return ("<h1>This is the Home Page. </h1> <span>Site is under construction.<span>");
     }
 
     @PostMapping(path = "/registration")
-    public CommonResponseSingle userRegistration(@RequestBody @Valid UserDto userDto, HttpServletRequest request){
+    public CommonResponseSingle userRegistration(@RequestBody @Valid UserDto userDto, HttpServletRequest request) {
 
-        System.out.println(new Gson().toJson(userDto));
-
-        if(!userService.isUserExist(userDto.getEmail())){
+        if (!userService.isUserExist(userDto.getEmail())) {
+            if (userDto.getCompany().getId() != 0) {
+                return response(false, HttpStatus.BAD_REQUEST, "Please check your company information.", (User) null);
+            }
             User user = userService.createUser(userDto);
 
-            System.out.println(new Gson().toJson(user));
-
-            if(user != null){
+            if (user != null) {
                 return response(true, HttpStatus.CREATED, "User & Company registration successful", user);
-            }else{
+            } else {
                 return response(false, HttpStatus.BAD_REQUEST, "Something is wrong please contact.", (User) null);
             }
 
-        }else{
+        } else {
             return response(false, HttpStatus.NOT_ACCEPTABLE, "User already exist", (User) null);
         }
     }
 
+    @PostMapping(path = "/user/create")
+    public CommonResponseSingle userCreate(@RequestBody @Valid UserDto userDto, HttpServletRequest request) {
+
+        storeUserDetails(request);
+
+        if (!userService.isUserExist(userDto.getEmail())) {
+
+            userDto.setCompany(null);
+            User user = userService.createUser(userDto);
+
+            if (user != null) {
+                return response(true, HttpStatus.CREATED, "User & Company registration successful", user);
+            } else {
+                return response(false, HttpStatus.BAD_REQUEST, "Something is wrong please contact.", (User) null);
+            }
+
+        } else {
+            return response(false, HttpStatus.NOT_ACCEPTABLE, "User already exist", (User) null);
+        }
+    }
 
     @GetMapping(path = "user/{id}")
-    public CommonResponseSingle<User> getProduct(@PathVariable("id") int id, HttpServletRequest request) {
+    public CommonResponseSingle<User> getUser(@PathVariable("id") int id, HttpServletRequest request) {
+
+        storeUserDetails(request);
 
         User user = userService.getById(id);
 
@@ -97,9 +119,10 @@ public class UserController extends ControllerHelper {
         }
     }
 
-
     @GetMapping(path = "user/list")
-    public CommonResponseArray<User> getAll(HttpServletRequest request, Pageable pageable) {
+    public CommonResponseArray getAll(HttpServletRequest request, Pageable pageable) {
+
+        storeUserDetails(request);
 
         List<User> products = userService.getAll(pageable);
 
@@ -115,10 +138,10 @@ public class UserController extends ControllerHelper {
 
     }
 
-
     @PostMapping(path = "user/update")
     public CommonResponseSingle updateProduct(@RequestBody UserDto userDto, HttpServletRequest request) {
 
+        storeUserDetails(request);
 
         User user = userService.update(userDto);
 
@@ -133,15 +156,15 @@ public class UserController extends ControllerHelper {
     @DeleteMapping(path = "user/{id}")
     public CommonResponseSingle<User> deleteProduct(@PathVariable("id") int id, HttpServletRequest request) {
 
+        storeUserDetails(request);
 
         if (userService.deleteById(id)) {
             return response(true, HttpStatus.OK, "User by id " + id + " is deleted", (User) null);
-        } else{
+        } else {
             return response(false, HttpStatus.NOT_FOUND, "User not found or deleted", (User) null);
         }
     }
 
-    
     @GetMapping("/user")
     public String user() {
         return ("<h1>Welcome User</h1>");

@@ -18,7 +18,7 @@ public interface Service<ReqEntity, ResEntity> {
 
     public boolean deleteById(int id);
 
-    public ResEntity getByValue(String kye, String value);
+    public ResEntity getByValue(String key, String value);
 
     public List<ResEntity> getAllByValue(String kye, String value);
 
@@ -27,4 +27,5 @@ public interface Service<ReqEntity, ResEntity> {
     public boolean isDeleted(int id);
 
     MyPagenation getPageable(Pageable pageable);
+
 }

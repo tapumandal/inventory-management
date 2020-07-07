@@ -1,6 +1,7 @@
 package com.tapumandal.ims.entity;
 
 import com.tapumandal.ims.entity.dto.CompanyDto;
+import com.tapumandal.ims.util.ApplicationPreferences;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,9 @@ public class Employee {
 
     @Column(name = "address")
     protected String address;
+
+    @Column(name = "company_id", updatable = false)
+    protected int companyId = ApplicationPreferences.getUser().getCompany().getId();
 
     @Column(name = "created_at")
     @CreationTimestamp
@@ -122,5 +126,13 @@ public class Employee {
 
     public void setDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
     }
 }

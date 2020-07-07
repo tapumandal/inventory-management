@@ -27,6 +27,7 @@ public class MeasurementController extends ControllerHelper<Measurement> {
     @PostMapping(path = "/create")
     public CommonResponseSingle createProduct(@RequestBody @Valid MeasurementDto measurementDto, HttpServletRequest request) {
 
+        storeUserDetails(request);
 
         Measurement measurement = measurementService.create(measurementDto);
 
@@ -41,6 +42,8 @@ public class MeasurementController extends ControllerHelper<Measurement> {
     @GetMapping(path = "/{id}")
     public CommonResponseSingle<Measurement> getProduct(@PathVariable("id") int id, HttpServletRequest request) {
 
+        storeUserDetails(request);
+
         Measurement measurement = measurementService.getById(id);
 
         if (measurement != null) {
@@ -54,6 +57,8 @@ public class MeasurementController extends ControllerHelper<Measurement> {
 
     @GetMapping(path = "/list")
     public CommonResponseArray<Measurement> getAll(HttpServletRequest request, Pageable pageable) {
+
+        storeUserDetails(request);
 
         List<Measurement> products = measurementService.getAll(pageable);
 
@@ -73,6 +78,8 @@ public class MeasurementController extends ControllerHelper<Measurement> {
     @PostMapping(path = "/update")
     public CommonResponseSingle updateProduct(@RequestBody MeasurementDto measurementDto, HttpServletRequest request) {
 
+        storeUserDetails(request);
+
         Measurement measurement = measurementService.update(measurementDto);
 
         if (measurement != null) {
@@ -86,6 +93,7 @@ public class MeasurementController extends ControllerHelper<Measurement> {
     @DeleteMapping(path = "/{id}")
     public CommonResponseSingle<Measurement> deleteProduct(@PathVariable("id") int id, HttpServletRequest request) {
 
+        storeUserDetails(request);
 
         if (measurementService.deleteById(id)) {
             return response(true, HttpStatus.OK, "Measurement by id " + id + " is deleted", (Measurement) null);

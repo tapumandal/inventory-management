@@ -3,6 +3,7 @@ package com.tapumandal.ims.repository.implementation;
 import com.tapumandal.ims.entity.Measurement;
 import com.tapumandal.ims.entity.Product;
 import com.tapumandal.ims.repository.ProductRepository;
+import com.tapumandal.ims.util.ApplicationPreferences;
 import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -30,29 +31,21 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 
     @Override
-    public Product create(Product product) {
+    public int create(Product product) {
 
         getSession().saveOrUpdate(product);
-//        getSession().flush();
-//        getSession().clear();
-        return product;
-//        return product;
+        getSession().flush();
+        getSession().clear();
+        return product.getId();
     }
 
     @Override
-    public Product update(Product product) {
+    public int update(Product product) {
 
-        Optional<Product> proTmp = Optional.ofNullable(getById(product.getId()));
+        getSession().update(product);
+        getSession().flush();
         getSession().clear();
-
-        if(proTmp.isPresent()){
-            getSession().update(product);
-            getSession().flush();
-            getSession().clear();
-            return getById(product.getId());
-        }else{
-            return null;
-        }
+        return product.getId();
     }
 
     @Override
@@ -82,7 +75,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     private Query getQuery(){
-        String query = "FROM Product P WHERE P.isDeleted = 0";
+        String query = "FROM Product P WHERE P.isDeleted = 0 AND P.companyId = "+ ApplicationPreferences.getUser().getCompany().getId();
         Query resQuery =  getSession().createQuery(query);
 
         return resQuery;
@@ -91,7 +84,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public Product getById(int id) {
 
-        String query = "FROM Product P WHERE P.id = "+id+" AND P.isDeleted = 0";
+        String query = "FROM Product P WHERE P.id = "+id+" AND P.isDeleted = 0 AND P.companyId = "+ApplicationPreferences.getUser().getCompany().getId();
         return (Product) getSession().createQuery(query).uniqueResult();
     }
 
