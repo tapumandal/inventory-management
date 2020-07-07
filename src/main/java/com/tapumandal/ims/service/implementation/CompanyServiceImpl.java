@@ -32,12 +32,12 @@ public class CompanyServiceImpl implements CompanyService {
         Company pro = new Company(companyDto);
         Optional<Company> company;
 
-        try{
+//        try{
             int companyId = companyRepository.create(pro);
             company = Optional.ofNullable(companyRepository.getById(companyId));
-        }catch (Exception e){
-            return null;
-        }
+//        }catch (Exception e){
+//            return null;
+//        }
 
         if(company.isPresent()){
             return company.get();

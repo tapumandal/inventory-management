@@ -61,7 +61,6 @@ public class UserRepositoryImpl  implements UserRepository {
     @Override
     public List<User> getAll(Pageable pageable) {
 
-
         Query resQuery = getQuery();
 
         int pageNum = pageable.getPageNumber();
@@ -84,20 +83,6 @@ public class UserRepositoryImpl  implements UserRepository {
         return myPagenation;
     }
 
-    private Query getQuery(){
-        String query = "FROM User U WHERE U.isDeleted = 0 AND U.companyId = "+ApplicationPreferences.getUser().getCompany().getId();
-        Query resQuery =  getSession().createQuery(query);
-
-        return resQuery;
-    }
-
-    @Override
-    public User getById(int id) {
-
-//        String query = "FROM User U WHERE U.id = "+id+" AND U.isDeleted = 0 AND U.companyId = "+ApplicationPreferences.getUser().getCompany().getId();
-        String query = "FROM User U WHERE U.id = "+id+" AND U.isDeleted = 0";
-        return (User) getSession().createQuery(query).uniqueResult();
-    }
 
     public User getByUserName(String userName) {
 
@@ -138,5 +123,20 @@ public class UserRepositoryImpl  implements UserRepository {
 
         return false;
 
+    }
+
+
+    private Query getQuery(){
+        String query = "FROM User U WHERE U.isDeleted = 0 AND U.companyId = "+ApplicationPreferences.getUser().getCompany().getId();
+        Query resQuery =  getSession().createQuery(query);
+
+        return resQuery;
+    }
+
+    @Override
+    public User getById(int id) {
+
+        String query = "FROM User U WHERE U.id = "+id+" AND U.isDeleted = 0 AND U.company.id = "+ApplicationPreferences.getUser().getCompany().getId();
+        return (User) getSession().createQuery(query).uniqueResult();
     }
 }

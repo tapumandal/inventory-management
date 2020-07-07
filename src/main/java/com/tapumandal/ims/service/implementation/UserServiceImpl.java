@@ -28,6 +28,9 @@ public class UserServiceImpl implements UserService{
     @Autowired
     CompanyService companyService;
 
+    @Autowired
+    ApplicationPreferences applicationPreferences;
+
     private User user;
 
     public UserServiceImpl(){}
@@ -40,28 +43,53 @@ public class UserServiceImpl implements UserService{
     @Override
     public User createUser(UserDto userDto) {
 
-        User u;
-
         if(userDto.getCompany() != null){
-            Company company = new Company();
-            company.setId(companyService.create(userDto.getCompany()).getId());
-            u = new User(userDto);
-            u.setCompany(company);
-            u.setRole("ADMIN");
+            return createAdminAccount(userDto);
         }else{
-            u = new User(userDto);
+            return createUserAccount(userDto);
         }
+    }
+
+    private User createAdminAccount(UserDto userDto) {
+        Company company = new Company();
+        company.setId(companyService.create(userDto.getCompany()).getId());
+        User u = new User(userDto);
+        u.setCompany(company);
+        u.setRole("ADMIN");
+
 
         Optional<User> user;
-        try{
-            int userId = userRepository.create(u);
+//        try{
+        int userId = userRepository.create(u);
 
-            applicationPreferences.saveUserByUsername(u.getUsername());
+        applicationPreferences.saveUserByUsername(u.getUsername());
 
-            user = Optional.ofNullable(userRepository.getById(userId));
-        }catch (Exception e){
+        user = Optional.ofNullable(userRepository.getById(userId));
+//        }catch (Exception e){
+//            return null;
+//        }
+
+        if(user.isPresent()){
+            return user.get();
+        }else{
             return null;
         }
+    }
+
+    private User createUserAccount(UserDto userDto) {
+        User u = new User(userDto);
+        Company company = new Company();
+        company.setId(ApplicationPreferences.getUser().getCompany().getId());
+        u.setCompany(company);
+
+        Optional<User> user;
+//        try{
+        int userId = userRepository.create(u);
+
+        user = Optional.ofNullable(userRepository.getById(userId));
+//        }catch (Exception e){
+//            return null;
+//        }
 
         if(user.isPresent()){
             return user.get();
@@ -108,8 +136,6 @@ public class UserServiceImpl implements UserService{
         }
     }
 
-    @Autowired
-    ApplicationPreferences applicationPreferences;
 
     @Override
     public User getById(int id) {

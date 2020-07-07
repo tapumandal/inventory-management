@@ -4,6 +4,7 @@ import com.tapumandal.ims.entity.Measurement;
 import com.tapumandal.ims.entity.Company;
 import com.tapumandal.ims.repository.CompanyRepository;
 import com.tapumandal.ims.repository.ProductRepository;
+import com.tapumandal.ims.util.ApplicationPreferences;
 import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -75,7 +76,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     private Query getQuery(){
-        String query = "FROM Company P WHERE P.isDeleted = 0";
+        String query = "FROM Company C WHERE C.isDeleted = 0 AND C.id = "+ ApplicationPreferences.getUser().getCompany().getId();
         Query resQuery =  getSession().createQuery(query);
 
         return resQuery;
@@ -84,7 +85,7 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     @Override
     public Company getById(int id) {
 
-        String query = "FROM Company P WHERE P.id = "+id+" AND P.isDeleted = 0";
+        String query = "FROM Company C WHERE C.id = "+id+" AND C.isDeleted = 0 AND C.id = "+ ApplicationPreferences.getUser().getCompany().getId();
         return (Company) getSession().createQuery(query).uniqueResult();
     }
 

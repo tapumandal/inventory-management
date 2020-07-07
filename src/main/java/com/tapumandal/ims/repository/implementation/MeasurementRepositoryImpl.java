@@ -5,6 +5,7 @@ import com.tapumandal.ims.entity.Measurement;
 import com.tapumandal.ims.entity.Product;
 import com.tapumandal.ims.repository.MeasurementRepository;
 import com.tapumandal.ims.repository.ProductRepository;
+import com.tapumandal.ims.util.ApplicationPreferences;
 import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
@@ -76,7 +77,7 @@ public class MeasurementRepositoryImpl implements MeasurementRepository {
     }
 
     private Query getQuery(){
-        String query = "FROM Measurement P WHERE P.isDeleted = 0";
+        String query = "FROM Measurement M WHERE M.isDeleted = 0 AND M.companyId = "+ ApplicationPreferences.getUser().getCompany().getId();
         Query resQuery =  getSession().createQuery(query);
 
         return resQuery;
@@ -85,7 +86,7 @@ public class MeasurementRepositoryImpl implements MeasurementRepository {
     @Override
     public Measurement getById(int id) {
 
-        String query = "FROM Measurement P WHERE P.id = "+id+" AND P.isDeleted = 0";
+        String query = "FROM Measurement M WHERE M.id = "+id+" AND M.isDeleted = 0 AND M.companyId = "+ ApplicationPreferences.getUser().getCompany().getId();
         return (Measurement) getSession().createQuery(query).uniqueResult();
     }
 
