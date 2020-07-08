@@ -2,6 +2,7 @@ package com.tapumandal.ims.repository.implementation;
 
 import com.tapumandal.ims.entity.Measurement;
 import com.tapumandal.ims.entity.Product;
+import com.tapumandal.ims.entity.Supplier;
 import com.tapumandal.ims.repository.ProductRepository;
 import com.tapumandal.ims.util.ApplicationPreferences;
 import com.tapumandal.ims.util.MyPagenation;
@@ -42,9 +43,14 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public int update(Product product) {
 
-        getSession().update(product);
-        getSession().flush();
+        Optional<Product> proTmp = Optional.ofNullable(getById(product.getId()));
         getSession().clear();
+
+        if(proTmp.isPresent()) {
+            getSession().update(product);
+            getSession().flush();
+            getSession().clear();
+        }
         return product.getId();
     }
 

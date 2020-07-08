@@ -1,5 +1,6 @@
 package com.tapumandal.ims.entity;
 
+import com.tapumandal.ims.entity.dto.SupplierDto;
 import com.tapumandal.ims.util.ApplicationPreferences;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -14,16 +15,22 @@ public class Supplier {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    protected int id;
+    private int id;
 
     @Column(name = "name")
-    protected String name;
+    private String name;
 
     @Column(name = "contact")
-    protected String contact;
+    private String contact;
+
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "note")
+    private String note;
 
     @Column(name = "company_id", updatable = false)
-    protected int companyId = ApplicationPreferences.getUser().getCompany().getId();
+    private int companyId = ApplicationPreferences.getUser().getCompany().getId();
 
     @Column(name = "is_active", columnDefinition = "boolean default 1")
     private boolean isActive = true;
@@ -38,6 +45,19 @@ public class Supplier {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Date updatedAt;
+
+    public Supplier() {
+    }
+
+    public Supplier(SupplierDto supplierDto) {
+        this.id = supplierDto.getId();
+        this.name = supplierDto.getName();
+        this.contact = supplierDto.getContact();
+        this.address = supplierDto.getAddress();
+        this.note = supplierDto.getNote();
+        this.isActive = supplierDto.isActive();
+        this.isDeleted = supplierDto.isDeleted();
+    }
 
     public int getId() {
         return id;
@@ -61,6 +81,22 @@ public class Supplier {
 
     public void setContact(String contact) {
         this.contact = contact;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
     }
 
     public int getCompanyId() {

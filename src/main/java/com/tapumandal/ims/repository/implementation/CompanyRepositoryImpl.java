@@ -2,6 +2,7 @@ package com.tapumandal.ims.repository.implementation;
 
 import com.tapumandal.ims.entity.Measurement;
 import com.tapumandal.ims.entity.Company;
+import com.tapumandal.ims.entity.Supplier;
 import com.tapumandal.ims.repository.CompanyRepository;
 import com.tapumandal.ims.repository.ProductRepository;
 import com.tapumandal.ims.util.ApplicationPreferences;
@@ -43,9 +44,14 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     @Override
     public int update(Company company) {
 
-        getSession().update(company);
-        getSession().flush();
+        Optional<Company> proTmp = Optional.ofNullable(getById(company.getId()));
         getSession().clear();
+
+        if(proTmp.isPresent()) {
+            getSession().update(company);
+            getSession().flush();
+            getSession().clear();
+        }
         return company.getId();
     }
 

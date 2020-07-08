@@ -1,11 +1,8 @@
 package com.tapumandal.ims.repository.implementation;
 
-import com.tapumandal.ims.entity.Measurement;
-import com.tapumandal.ims.entity.Measurement;
-import com.tapumandal.ims.entity.Product;
 import com.tapumandal.ims.entity.Supplier;
-import com.tapumandal.ims.repository.MeasurementRepository;
-import com.tapumandal.ims.repository.ProductRepository;
+import com.tapumandal.ims.entity.Warehouse;
+import com.tapumandal.ims.repository.WarehouseRepository;
 import com.tapumandal.ims.util.ApplicationPreferences;
 import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
@@ -16,13 +13,12 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 @Transactional
-public class MeasurementRepositoryImpl implements MeasurementRepository {
+public class WarehouseRepositoryImpl implements WarehouseRepository {
 
     @Autowired
     EntityManager entityManager;
@@ -34,30 +30,29 @@ public class MeasurementRepositoryImpl implements MeasurementRepository {
 
 
     @Override
-    public int create(Measurement measurement) {
-
-        getSession().saveOrUpdate(measurement);
+    public int create(Warehouse warehouse) {
+        getSession().saveOrUpdate(warehouse);
         getSession().flush();
         getSession().clear();
-        return measurement.getId();
+        return warehouse.getId();
     }
 
     @Override
-    public int update(Measurement measurement) {
+    public int update(Warehouse warehouse) {
 
-        Optional<Measurement> proTmp = Optional.ofNullable(getById(measurement.getId()));
+        Optional<Warehouse> proTmp = Optional.ofNullable(getById(warehouse.getId()));
         getSession().clear();
 
         if(proTmp.isPresent()) {
-            getSession().update(measurement);
+            getSession().update(warehouse);
             getSession().flush();
             getSession().clear();
         }
-        return measurement.getId();
+        return warehouse.getId();
     }
 
     @Override
-    public List<Measurement> getAll(Pageable pageable) {
+    public List<Warehouse> getAll(Pageable pageable) {
 
 
         Query resQuery = getQuery();
@@ -83,23 +78,23 @@ public class MeasurementRepositoryImpl implements MeasurementRepository {
     }
 
     private Query getQuery(){
-        String query = "FROM Measurement M WHERE M.isDeleted = 0 AND M.companyId = "+ ApplicationPreferences.getUser().getCompany().getId();
+        String query = "FROM Warehouse M WHERE M.isDeleted = 0 AND M.companyId = "+ companyId();
         Query resQuery =  getSession().createQuery(query);
 
         return resQuery;
     }
 
     @Override
-    public Measurement getById(int id) {
+    public Warehouse getById(int id) {
 
-        String query = "FROM Measurement M WHERE M.id = "+id+" AND M.isDeleted = 0 AND M.companyId = "+ ApplicationPreferences.getUser().getCompany().getId();
-        return (Measurement) getSession().createQuery(query).uniqueResult();
+        String query = "FROM Warehouse M WHERE M.id = "+id+" AND M.isDeleted = 0 AND M.companyId = "+ companyId();
+        return (Warehouse) getSession().createQuery(query).uniqueResult();
     }
 
     @Override
-    public List<Measurement> getByKeyAndValue(String key, String value) {
-        return (List<Measurement>) getSession().createQuery(
-                "from Measurement where "+key+" = :value"
+    public List<Warehouse> getByKeyAndValue(String key, String value) {
+        return (List<Warehouse>) getSession().createQuery(
+                "from Warehouse where "+key+" = :value"
         ).setParameter("value", value)
                 .getResultList();
     }
@@ -107,18 +102,20 @@ public class MeasurementRepositoryImpl implements MeasurementRepository {
     @Override
     public boolean delete(int id) {
 
-        Optional<Measurement> proTmp = Optional.ofNullable(getById(id));
+        Optional<Warehouse> proTmp = Optional.ofNullable(getById(id));
         if(proTmp.isPresent()){
-            Measurement measurement = proTmp.get();
-            measurement.setActive(false);
-            measurement.setDeleted(true);
-            measurement.setProducts(new ArrayList<Product>());
-
-            update(measurement);
+            Warehouse warehouse = proTmp.get();
+            warehouse.setActive(false);
+            warehouse.setDeleted(true);
+            update(warehouse);
             return true;
         }else{
             return false;
         }
+    }
+
+    private int companyId(){
+        return ApplicationPreferences.getUser().getCompany().getId();
     }
 
 
