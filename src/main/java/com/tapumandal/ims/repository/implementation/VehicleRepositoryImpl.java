@@ -1,9 +1,8 @@
 package com.tapumandal.ims.repository.implementation;
 
 import com.tapumandal.ims.entity.Measurement;
-import com.tapumandal.ims.entity.Product;
-import com.tapumandal.ims.entity.Supplier;
-import com.tapumandal.ims.repository.ProductRepository;
+import com.tapumandal.ims.entity.Vehicle;
+import com.tapumandal.ims.repository.VehicleRepository;
 import com.tapumandal.ims.util.ApplicationPreferences;
 import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
@@ -20,7 +19,7 @@ import java.util.Optional;
 
 @Repository
 @Transactional
-public class ProductRepositoryImpl implements ProductRepository {
+public class VehicleRepositoryImpl implements VehicleRepository {
 
     @Autowired
     EntityManager entityManager;
@@ -32,30 +31,30 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 
     @Override
-    public int create(Product product) {
+    public int create(Vehicle vehicle) {
 
-        getSession().saveOrUpdate(product);
+        getSession().saveOrUpdate(vehicle);
         getSession().flush();
         getSession().clear();
-        return product.getId();
+        return vehicle.getId();
     }
 
     @Override
-    public int update(Product product) {
+    public int update(Vehicle vehicle) {
 
-        Optional<Product> tmpEntity = Optional.ofNullable(getById(product.getId()));
+        Optional<Vehicle> tmpEntity = Optional.ofNullable(getById(vehicle.getId()));
         getSession().clear();
 
         if(tmpEntity.isPresent()) {
-            getSession().update(product);
+            getSession().update(vehicle);
             getSession().flush();
             getSession().clear();
         }
-        return product.getId();
+        return vehicle.getId();
     }
 
     @Override
-    public List<Product> getAll(Pageable pageable) {
+    public List<Vehicle> getAll(Pageable pageable) {
 
 
         Query resQuery = getQuery();
@@ -81,23 +80,23 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     private Query getQuery(){
-        String query = "FROM Product P WHERE P.isDeleted = 0 AND P.companyId = "+ ApplicationPreferences.getUser().getCompany().getId();
+        String query = "FROM Vehicle P WHERE P.isDeleted = 0 AND P.companyId = "+ ApplicationPreferences.getUser().getCompany().getId();
         Query resQuery =  getSession().createQuery(query);
 
         return resQuery;
     }
 
     @Override
-    public Product getById(int id) {
+    public Vehicle getById(int id) {
 
-        String query = "FROM Product P WHERE P.id = "+id+" AND P.isDeleted = 0 AND P.companyId = "+ApplicationPreferences.getUser().getCompany().getId();
-        return (Product) getSession().createQuery(query).uniqueResult();
+        String query = "FROM Vehicle P WHERE P.id = "+id+" AND P.isDeleted = 0 AND P.companyId = "+ApplicationPreferences.getUser().getCompany().getId();
+        return (Vehicle) getSession().createQuery(query).uniqueResult();
     }
 
     @Override
-    public List<Product> getByKeyAndValue(String key, String value) {
-        return (List<Product>) getSession().createQuery(
-                "from Product where "+key+" = :value"
+    public List<Vehicle> getByKeyAndValue(String key, String value) {
+        return (List<Vehicle>) getSession().createQuery(
+                "from Vehicle where "+key+" = :value"
         ).setParameter("value", value)
                 .getResultList();
     }
@@ -105,14 +104,12 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public boolean delete(int id) {
 
-        Optional<Product> tmpEntity = Optional.ofNullable(getById(id));
+        Optional<Vehicle> tmpEntity = Optional.ofNullable(getById(id));
         if(tmpEntity.isPresent()){
-            Product product = tmpEntity.get();
-            product.setActive(false);
-            product.setDeleted(true);
-            product.setMeasurement(new ArrayList<Measurement>());
-
-            update(product);
+            Vehicle vehicle = tmpEntity.get();
+            vehicle.setActive(false);
+            vehicle.setDeleted(true);
+            update(vehicle);
             return true;
         }else{
             return false;

@@ -44,10 +44,10 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     @Override
     public int update(Company company) {
 
-        Optional<Company> proTmp = Optional.ofNullable(getById(company.getId()));
+        Optional<Company> tmpEntity = Optional.ofNullable(getById(company.getId()));
         getSession().clear();
 
-        if(proTmp.isPresent()) {
+        if(tmpEntity.isPresent()) {
             getSession().update(company);
             getSession().flush();
             getSession().clear();
@@ -96,6 +96,13 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     }
 
     @Override
+    public Company getCompanyFirstTime(int id) {
+
+        String query = "FROM Company C WHERE C.id = "+id+" AND C.isDeleted = 0";
+        return (Company) getSession().createQuery(query).uniqueResult();
+    }
+
+    @Override
     public List<Company> getByKeyAndValue(String key, String value) {
         return (List<Company>) getSession().createQuery(
                 "from Company where "+key+" = :value"
@@ -106,9 +113,9 @@ public class CompanyRepositoryImpl implements CompanyRepository {
     @Override
     public boolean delete(int id) {
 
-        Optional<Company> proTmp = Optional.ofNullable(getById(id));
-        if(proTmp.isPresent()){
-            Company company = proTmp.get();
+        Optional<Company> tmpEntity = Optional.ofNullable(getById(id));
+        if(tmpEntity.isPresent()){
+            Company company = tmpEntity.get();
             company.setActive(false);
             company.setDeleted(true);
             update(company);

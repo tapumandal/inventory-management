@@ -40,10 +40,10 @@ public class WarehouseRepositoryImpl implements WarehouseRepository {
     @Override
     public int update(Warehouse warehouse) {
 
-        Optional<Warehouse> proTmp = Optional.ofNullable(getById(warehouse.getId()));
+        Optional<Warehouse> tmpEntity = Optional.ofNullable(getById(warehouse.getId()));
         getSession().clear();
 
-        if(proTmp.isPresent()) {
+        if(tmpEntity.isPresent()) {
             getSession().update(warehouse);
             getSession().flush();
             getSession().clear();
@@ -102,9 +102,9 @@ public class WarehouseRepositoryImpl implements WarehouseRepository {
     @Override
     public boolean delete(int id) {
 
-        Optional<Warehouse> proTmp = Optional.ofNullable(getById(id));
-        if(proTmp.isPresent()){
-            Warehouse warehouse = proTmp.get();
+        Optional<Warehouse> tmpEntity = Optional.ofNullable(getById(id));
+        if(tmpEntity.isPresent()){
+            Warehouse warehouse = tmpEntity.get();
             warehouse.setActive(false);
             warehouse.setDeleted(true);
             update(warehouse);

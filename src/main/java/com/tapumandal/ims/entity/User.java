@@ -66,6 +66,14 @@ public class User {
     @JsonSerialize(using = CustomCompanySerializer.class)
     private Company company;
 
+
+//    @OneToOne( mappedBy = "dsr" )
+//    private DeliveryUnit dsr;
+//    @OneToOne( mappedBy = "driver" )
+//    private DeliveryUnit driver;
+//    @OneToOne( mappedBy = "helpingHand" )
+//    private DeliveryUnit helpingHand;
+
     public User(){};
 
     public User(UserDto userDto) {
@@ -213,4 +221,28 @@ public class User {
     public void setUserName(String userName) {
         this.userName = userName;
     }
+
+//    public DeliveryUnit getDsr() {
+//        return dsr;
+//    }
+//
+//    public void setDsr(DeliveryUnit dsr) {
+//        this.dsr = dsr;
+//    }
+//
+//    public DeliveryUnit getDriver() {
+//        return driver;
+//    }
+//
+//    public void setDriver(DeliveryUnit driver) {
+//        this.driver = driver;
+//    }
+//
+//    public DeliveryUnit getHelpingHand() {
+//        return helpingHand;
+//    }
+//
+//    public void setHelpingHand(DeliveryUnit helpingHand) {
+//        this.helpingHand = helpingHand;
+//    }
 }

@@ -39,10 +39,10 @@ public class SupplierRepositoryImpl implements SupplierRepository {
 
     @Override
     public int update(Supplier supplier) {
-        Optional<Supplier> proTmp = Optional.ofNullable(getById(supplier.getId()));
+        Optional<Supplier> tmpEntity = Optional.ofNullable(getById(supplier.getId()));
         getSession().clear();
 
-        if(proTmp.isPresent()) {
+        if(tmpEntity.isPresent()) {
             getSession().update(supplier);
             getSession().flush();
             getSession().clear();
@@ -101,9 +101,9 @@ public class SupplierRepositoryImpl implements SupplierRepository {
     @Override
     public boolean delete(int id) {
 
-        Optional<Supplier> proTmp = Optional.ofNullable(getById(id));
-        if(proTmp.isPresent()){
-            Supplier supplier = proTmp.get();
+        Optional<Supplier> tmpEntity = Optional.ofNullable(getById(id));
+        if(tmpEntity.isPresent()){
+            Supplier supplier = tmpEntity.get();
             supplier.setActive(false);
             supplier.setDeleted(true);
             update(supplier);

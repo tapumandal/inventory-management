@@ -34,7 +34,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 //        try{
             int companyId = companyRepository.create(pro);
-            company = Optional.ofNullable(companyRepository.getById(companyId));
+            company = Optional.ofNullable(companyRepository.getCompanyFirstTime(companyId));
 //        }catch (Exception e){
 //            return null;
 //        }

@@ -45,10 +45,10 @@ public class MeasurementRepositoryImpl implements MeasurementRepository {
     @Override
     public int update(Measurement measurement) {
 
-        Optional<Measurement> proTmp = Optional.ofNullable(getById(measurement.getId()));
+        Optional<Measurement> tmpEntity = Optional.ofNullable(getById(measurement.getId()));
         getSession().clear();
 
-        if(proTmp.isPresent()) {
+        if(tmpEntity.isPresent()) {
             getSession().update(measurement);
             getSession().flush();
             getSession().clear();
@@ -107,9 +107,9 @@ public class MeasurementRepositoryImpl implements MeasurementRepository {
     @Override
     public boolean delete(int id) {
 
-        Optional<Measurement> proTmp = Optional.ofNullable(getById(id));
-        if(proTmp.isPresent()){
-            Measurement measurement = proTmp.get();
+        Optional<Measurement> tmpEntity = Optional.ofNullable(getById(id));
+        if(tmpEntity.isPresent()){
+            Measurement measurement = tmpEntity.get();
             measurement.setActive(false);
             measurement.setDeleted(true);
             measurement.setProducts(new ArrayList<Product>());

@@ -1,6 +1,7 @@
 package com.tapumandal.ims.entity;
 
 import com.tapumandal.ims.entity.dto.CompanyDto;
+import com.tapumandal.ims.entity.dto.VehicleDto;
 import com.tapumandal.ims.util.ApplicationPreferences;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -27,6 +28,12 @@ public class Vehicle {
     @Column(name = "registration")
     protected String registration;
 
+    @Column(name = "chassis")
+    protected String chassis;
+
+    @Column(name = "engine")
+    protected String engine;
+
     @Column(name = "company_id", updatable = false)
     protected int companyId = ApplicationPreferences.getUser().getCompany().getId();
 
@@ -43,6 +50,22 @@ public class Vehicle {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Date updatedAt;
+
+//    @OneToOne( mappedBy = "vehicle" )
+//    private DeliveryUnit deliveryUnit;
+
+    public Vehicle(){}
+
+    public Vehicle(VehicleDto vehicleDto) {
+        this.id = vehicleDto.getId();
+        this.name = vehicleDto.getName();
+        this.model = vehicleDto.getModel();
+        this.registration = vehicleDto.getRegistration();
+        this.chassis = vehicleDto.getChassis();
+        this.engine = vehicleDto.getEngine();
+        this.isActive = vehicleDto.isActive();
+        this.isDeleted = vehicleDto.isDeleted();
+    }
 
     public int getId() {
         return id;
@@ -115,4 +138,28 @@ public class Vehicle {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+    public String getChassis() {
+        return chassis;
+    }
+
+    public void setChassis(String chassis) {
+        this.chassis = chassis;
+    }
+
+    public String getEngine() {
+        return engine;
+    }
+
+    public void setEngine(String engine) {
+        this.engine = engine;
+    }
+
+//    public DeliveryUnit getDeliveryUnit() {
+//        return deliveryUnit;
+//    }
+//
+//    public void setDeliveryUnit(DeliveryUnit deliveryUnit) {
+//        this.deliveryUnit = deliveryUnit;
+//    }
 }
