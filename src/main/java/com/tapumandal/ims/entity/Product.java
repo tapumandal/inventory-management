@@ -36,7 +36,6 @@ public class Product {
 
     @Column(name = "company_id", updatable = false)
     protected int companyId = ApplicationPreferences.getUser().getCompany().getId();
-//    protected int companyId = 0;
 
     @Column(name = "is_active", columnDefinition = "boolean default 1")
     private boolean isActive = true;

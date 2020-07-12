@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService{
 
     private User createAdminAccount(UserDto userDto) {
         Company company = new Company();
-        company.setId(companyService.create(userDto.getCompany()).getId());
+        company.setId( companyService.create( userDto.getCompany() ).getId() );
         User u = new User(userDto);
         u.setCompany(company);
         u.setRole("ADMIN");
@@ -172,7 +172,14 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public boolean isActive(int id) {
-        return user.isActive();
+        Optional<User> user = Optional.ofNullable(userRepository.getById(id));
+        if(user.isPresent()){
+            if(user.get().isActive()){
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 
     @Override

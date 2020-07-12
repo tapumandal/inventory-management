@@ -1,6 +1,7 @@
 package com.tapumandal.ims.entity;
 
 import com.tapumandal.ims.entity.dto.CompanyDto;
+import com.tapumandal.ims.entity.dto.WarehouseDto;
 import com.tapumandal.ims.util.ApplicationPreferences;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -43,6 +44,17 @@ public class Warehouse {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Date updatedAt;
+
+    public Warehouse() {}
+
+    public Warehouse(WarehouseDto warehouseDto) {
+        this.id = warehouseDto.getId();
+        this.name = warehouseDto.getName();
+        this.phone = warehouseDto.getPhone();
+        this.address = warehouseDto.getAddress();
+        this.isActive = warehouseDto.isActive();
+        this.isDeleted = warehouseDto.isDeleted();
+    }
 
     public int getId() {
         return id;

@@ -1,9 +1,8 @@
 package com.tapumandal.ims.repository.implementation;
 
-import com.tapumandal.ims.entity.Measurement;
-import com.tapumandal.ims.entity.Product;
 import com.tapumandal.ims.entity.Supplier;
-import com.tapumandal.ims.repository.ProductRepository;
+import com.tapumandal.ims.entity.Warehouse;
+import com.tapumandal.ims.repository.WarehouseRepository;
 import com.tapumandal.ims.util.ApplicationPreferences;
 import com.tapumandal.ims.util.MyPagenation;
 import org.hibernate.Session;
@@ -14,13 +13,12 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Repository
 @Transactional
-public class ProductRepositoryImpl implements ProductRepository {
+public class WarehouseRepositoryImpl implements WarehouseRepository {
 
     @Autowired
     EntityManager entityManager;
@@ -32,30 +30,29 @@ public class ProductRepositoryImpl implements ProductRepository {
 
 
     @Override
-    public int create(Product product) {
-
-        getSession().saveOrUpdate(product);
+    public int create(Warehouse warehouse) {
+        getSession().saveOrUpdate(warehouse);
         getSession().flush();
         getSession().clear();
-        return product.getId();
+        return warehouse.getId();
     }
 
     @Override
-    public int update(Product product) {
+    public int update(Warehouse warehouse) {
 
-        Optional<Product> tmpEntity = Optional.ofNullable(getById(product.getId()));
+        Optional<Warehouse> tmpEntity = Optional.ofNullable(getById(warehouse.getId()));
         getSession().clear();
 
         if(tmpEntity.isPresent()) {
-            getSession().update(product);
+            getSession().update(warehouse);
             getSession().flush();
             getSession().clear();
         }
-        return product.getId();
+        return warehouse.getId();
     }
 
     @Override
-    public List<Product> getAll(Pageable pageable) {
+    public List<Warehouse> getAll(Pageable pageable) {
 
 
         Query resQuery = getQuery();
@@ -81,23 +78,23 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     private Query getQuery(){
-        String query = "FROM Product P WHERE P.isDeleted = 0 AND P.companyId = "+ ApplicationPreferences.getUser().getCompany().getId();
+        String query = "FROM Warehouse M WHERE M.isDeleted = 0 AND M.companyId = "+ companyId();
         Query resQuery =  getSession().createQuery(query);
 
         return resQuery;
     }
 
     @Override
-    public Product getById(int id) {
+    public Warehouse getById(int id) {
 
-        String query = "FROM Product P WHERE P.id = "+id+" AND P.isDeleted = 0 AND P.companyId = "+ApplicationPreferences.getUser().getCompany().getId();
-        return (Product) getSession().createQuery(query).uniqueResult();
+        String query = "FROM Warehouse M WHERE M.id = "+id+" AND M.isDeleted = 0 AND M.companyId = "+ companyId();
+        return (Warehouse) getSession().createQuery(query).uniqueResult();
     }
 
     @Override
-    public List<Product> getByKeyAndValue(String key, String value) {
-        return (List<Product>) getSession().createQuery(
-                "from Product where "+key+" = :value"
+    public List<Warehouse> getByKeyAndValue(String key, String value) {
+        return (List<Warehouse>) getSession().createQuery(
+                "from Warehouse where "+key+" = :value"
         ).setParameter("value", value)
                 .getResultList();
     }
@@ -105,18 +102,20 @@ public class ProductRepositoryImpl implements ProductRepository {
     @Override
     public boolean delete(int id) {
 
-        Optional<Product> tmpEntity = Optional.ofNullable(getById(id));
+        Optional<Warehouse> tmpEntity = Optional.ofNullable(getById(id));
         if(tmpEntity.isPresent()){
-            Product product = tmpEntity.get();
-            product.setActive(false);
-            product.setDeleted(true);
-            product.setMeasurement(new ArrayList<Measurement>());
-
-            update(product);
+            Warehouse warehouse = tmpEntity.get();
+            warehouse.setActive(false);
+            warehouse.setDeleted(true);
+            update(warehouse);
             return true;
         }else{
             return false;
         }
+    }
+
+    private int companyId(){
+        return ApplicationPreferences.getUser().getCompany().getId();
     }
 
 

@@ -45,10 +45,10 @@ public class UserRepositoryImpl  implements UserRepository {
     @Override
     public int update(User user) {
 
-        Optional<User> proTmp = Optional.ofNullable(getById(user.getId()));
+        Optional<User> tmpEntity = Optional.ofNullable(getById(user.getId()));
         getSession().clear();
 
-        if(proTmp.isPresent()){
+        if(tmpEntity.isPresent()){
             getSession().update(user);
             getSession().flush();
             getSession().clear();
@@ -101,9 +101,9 @@ public class UserRepositoryImpl  implements UserRepository {
     @Override
     public boolean delete(int id) {
 
-        Optional<User> proTmp = Optional.ofNullable(getById(id));
-        if(proTmp.isPresent()){
-            User user = proTmp.get();
+        Optional<User> tmpEntity = Optional.ofNullable(getById(id));
+        if(tmpEntity.isPresent()){
+            User user = tmpEntity.get();
             user.setActive(false);
             user.setDeleted(true);
             update(user);
@@ -116,8 +116,8 @@ public class UserRepositoryImpl  implements UserRepository {
     @Override
     public boolean isUserExist(String userName) {
 
-        Optional<User> proTmp = Optional.ofNullable(getByUserName(userName));
-        if(proTmp.isPresent()){
+        Optional<User> tmpEntity = Optional.ofNullable(getByUserName(userName));
+        if(tmpEntity.isPresent()){
             return true;
         }
 
@@ -127,7 +127,7 @@ public class UserRepositoryImpl  implements UserRepository {
 
 
     private Query getQuery(){
-        String query = "FROM User U WHERE U.isDeleted = 0 AND U.companyId = "+ApplicationPreferences.getUser().getCompany().getId();
+        String query = "FROM User U WHERE U.isDeleted = 0 AND U.company.id = "+ApplicationPreferences.getUser().getCompany().getId();
         Query resQuery =  getSession().createQuery(query);
 
         return resQuery;

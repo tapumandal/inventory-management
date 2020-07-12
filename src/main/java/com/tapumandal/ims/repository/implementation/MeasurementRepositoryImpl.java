@@ -3,6 +3,7 @@ package com.tapumandal.ims.repository.implementation;
 import com.tapumandal.ims.entity.Measurement;
 import com.tapumandal.ims.entity.Measurement;
 import com.tapumandal.ims.entity.Product;
+import com.tapumandal.ims.entity.Supplier;
 import com.tapumandal.ims.repository.MeasurementRepository;
 import com.tapumandal.ims.repository.ProductRepository;
 import com.tapumandal.ims.util.ApplicationPreferences;
@@ -44,9 +45,14 @@ public class MeasurementRepositoryImpl implements MeasurementRepository {
     @Override
     public int update(Measurement measurement) {
 
-        getSession().update(measurement);
-        getSession().flush();
+        Optional<Measurement> tmpEntity = Optional.ofNullable(getById(measurement.getId()));
         getSession().clear();
+
+        if(tmpEntity.isPresent()) {
+            getSession().update(measurement);
+            getSession().flush();
+            getSession().clear();
+        }
         return measurement.getId();
     }
 
@@ -101,9 +107,9 @@ public class MeasurementRepositoryImpl implements MeasurementRepository {
     @Override
     public boolean delete(int id) {
 
-        Optional<Measurement> proTmp = Optional.ofNullable(getById(id));
-        if(proTmp.isPresent()){
-            Measurement measurement = proTmp.get();
+        Optional<Measurement> tmpEntity = Optional.ofNullable(getById(id));
+        if(tmpEntity.isPresent()){
+            Measurement measurement = tmpEntity.get();
             measurement.setActive(false);
             measurement.setDeleted(true);
             measurement.setProducts(new ArrayList<Product>());
