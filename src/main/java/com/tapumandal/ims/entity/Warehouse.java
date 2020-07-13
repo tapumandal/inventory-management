@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "warehouse")
@@ -44,6 +45,9 @@ public class Warehouse {
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Date updatedAt;
+
+    @OneToMany(mappedBy = "warehouse")
+    private List<ChallanProduct> challanProducts;
 
     public Warehouse() {}
 

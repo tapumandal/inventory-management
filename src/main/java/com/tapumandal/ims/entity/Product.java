@@ -31,8 +31,11 @@ public class Product {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "price_per_unit")
-    private String pricePerUnit;
+    @Column(name = "buying_price_per_unit")
+    private String buyingPricePerUnit;
+
+    @Column(name = "selling_price_per_unit")
+    private String sellingPricePerUnit;
 
     @Column(name = "company_id", updatable = false)
     protected int companyId = ApplicationPreferences.getUser().getCompany().getId();
@@ -66,7 +69,8 @@ public class Product {
 
         this.setId(productDto.getId());
         this.setName(productDto.getName());
-        this.setPricePerUnit(productDto.getPricePerUnit());
+        this.buyingPricePerUnit = productDto.getBuying_price_per_unit();
+        this.sellingPricePerUnit = productDto.getSelling_price_per_unit();
         this.setActive(productDto.isActive());
 
         for(MeasurementDto measurementDto: productDto.getMeasurement()){
@@ -94,12 +98,20 @@ public class Product {
         this.name = name;
     }
 
-    public String getPricePerUnit() {
-        return pricePerUnit;
+    public String getBuyingPricePerUnit() {
+        return buyingPricePerUnit;
     }
 
-    public void setPricePerUnit(String pricePerUnit) {
-        this.pricePerUnit = pricePerUnit;
+    public void setBuyingPricePerUnit(String buyingPricePerUnit) {
+        this.buyingPricePerUnit = buyingPricePerUnit;
+    }
+
+    public String getSellingPricePerUnit() {
+        return sellingPricePerUnit;
+    }
+
+    public void setSellingPricePerUnit(String sellingPricePerUnit) {
+        this.sellingPricePerUnit = sellingPricePerUnit;
     }
 
     public boolean isActive() {
