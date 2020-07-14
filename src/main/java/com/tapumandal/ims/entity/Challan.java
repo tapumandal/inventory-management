@@ -1,15 +1,10 @@
 package com.tapumandal.ims.entity;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.tapumandal.ims.annotation.CustomMeasurementSerializer;
 import com.tapumandal.ims.entity.dto.ChallanProductDto;
-import com.tapumandal.ims.entity.dto.MeasurementDto;
-import com.tapumandal.ims.entity.dto.ProductDto;
 import com.tapumandal.ims.entity.dto.ReceiveChallanDto;
 import com.tapumandal.ims.util.ApplicationPreferences;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.sql.Date;
@@ -66,7 +61,7 @@ public class ReceiveChallan {
     @Column(name = "due")
     private int due;
 
-    @OneToMany(mappedBy = "receiveChallan")
+    @OneToMany(mappedBy = "receiveChallan", cascade = CascadeType.PERSIST)
     private List<ChallanProduct> challanProducts;
 
 
