@@ -1,21 +1,12 @@
 package com.tapumandal.ims.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.tapumandal.ims.annotation.CustomMeasurementSerializer;
 import com.tapumandal.ims.entity.dto.ChallanProductDto;
-import com.tapumandal.ims.entity.dto.MeasurementDto;
-import com.tapumandal.ims.entity.dto.ProductDto;
 import com.tapumandal.ims.util.ApplicationPreferences;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
-import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "challan_product")
@@ -29,11 +20,11 @@ public class ChallanProduct {
 
 
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "measurement_id")
     private Measurement measurement;
 
@@ -43,16 +34,9 @@ public class ChallanProduct {
     @Column(name = "selling_price")
     private int sellingPrice;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name="warehouse_id", nullable=true)
     private Warehouse warehouse;
-
-
-    @ManyToOne
-    @JoinColumn(name = "receive_challan_id", nullable = false)
-    @JsonIgnore
-    private ReceiveChallan receiveChallan;
-
 
 
     @Column(name = "company_id", updatable = false)
@@ -139,14 +123,6 @@ public class ChallanProduct {
         this.warehouse = warehouse;
     }
 
-    public ReceiveChallan getReceiveChallan() {
-        return receiveChallan;
-    }
-
-    public void setReceiveChallan(ReceiveChallan receiveChallan) {
-        this.receiveChallan = receiveChallan;
-    }
-
     public int getCompanyId() {
         return companyId;
     }
@@ -178,5 +154,62 @@ public class ChallanProduct {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
+
 }
 
+
+//{"id":0,
+//        "supplier":{
+//                    "id":39,
+//                    "companyId":1,
+//                    "isActive":true,
+//                    "isDeleted":false
+//                    },
+//        "challanDeliveredVehicle":"challan_delivered_vehicle",
+//        "challanDeliveredPerson":"challan_delivered_person",
+//        "challanDeliveredContact":"challan_delivered_contact",
+//        "challanRevceivedTime":"challan_revceived_time",
+//        "totalProductCost":200,
+//        "vat":2,
+//        "tax":2,
+//        "otherCost":0,
+//        "payable":204,
+//        "totalPaid":204,
+//        "due":0,
+//        "challanProducts":
+//                        [
+//                            {
+//                                "id":0,
+//                                "product":
+//                                            {
+//                                                "id":37,
+//                                                "companyId":1,
+//                                                "isActive":true,
+//                                                "isDeleted":false,
+//                                                "measurement":[]
+//                                            },
+//                                "measurement":{
+//                                                "id":1,
+//                                                "companyId":1,
+//                                                "isActive":true,
+//                                                "isDeleted":false,
+//                                                "products":[]
+//                                              },
+//                                "buyingPrice":100,
+//                                "sellingPrice":110,
+//                                "warehouse":
+//                                            {
+//                                                "id":41,
+//                                                "companyId":1,
+//                                                "isActive":true,
+//                                                "isDeleted":false
+//                                            },
+//                                "companyId":1,
+//                                "isDeleted":false
+//                            }
+//                        ],
+//        "companyId":1,
+//        "isActive":true,
+//        "isDeleted":false
+//}

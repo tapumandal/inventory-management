@@ -1,8 +1,8 @@
 package com.tapumandal.ims.service;
 
-import com.tapumandal.ims.entity.ReceiveChallan;
-import com.tapumandal.ims.entity.dto.ReceiveChallanDto;
+import com.tapumandal.ims.entity.Challan;
+import com.tapumandal.ims.entity.dto.ChallanDto;
 
-public interface ChallanManagementService extends Service<ReceiveChallanDto, ReceiveChallan>{
+public interface ChallanManagementService extends Service<ChallanDto, Challan>{
 
 }

@@ -1,7 +1,7 @@
 package com.tapumandal.ims.entity;
 
 import com.tapumandal.ims.entity.dto.ChallanProductDto;
-import com.tapumandal.ims.entity.dto.ReceiveChallanDto;
+import com.tapumandal.ims.entity.dto.ChallanDto;
 import com.tapumandal.ims.util.ApplicationPreferences;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "challan")
-public class ReceiveChallan {
+public class Challan {
 
 
     @Id
@@ -26,7 +26,7 @@ public class ReceiveChallan {
     @OneToOne
     private Supplier supplier;
 
-//    Challan Delivered Unit Details
+//    challan Delivered Unit Details
     @Column(name = "challan_delivered_vehicle")
     private String challanDeliveredVehicle;
 
@@ -61,7 +61,9 @@ public class ReceiveChallan {
     @Column(name = "due")
     private int due;
 
-    @OneToMany(mappedBy = "receiveChallan", cascade = CascadeType.PERSIST)
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "challan_id")
     private List<ChallanProduct> challanProducts;
 
 
@@ -82,27 +84,27 @@ public class ReceiveChallan {
     @UpdateTimestamp
     private Date updatedAt;
 
-    public ReceiveChallan() {}
-    public ReceiveChallan(ReceiveChallanDto receiveChallanDto) {
-        this.id  = receiveChallanDto.getId();
-        this.challanDeliveredVehicle  = receiveChallanDto.getChallan_delivered_vehicle();
-        this.challanDeliveredPerson  = receiveChallanDto.getChallan_delivered_person();
-        this.challanDeliveredContact  = receiveChallanDto.getChallan_delivered_contact();
-        this.challanRevceivedTime  = receiveChallanDto.getChallan_revceived_time();
-        this.totalProductCost  = receiveChallanDto.getTotal_product_cost();
-        this.vat  = receiveChallanDto.getVat();
-        this.tax  = receiveChallanDto.getTax();
-        this.otherCost  = receiveChallanDto.getOther_cost();
-        this.payable  = receiveChallanDto.getPayable();
-        this.totalPaid  = receiveChallanDto.getTotal_paid();
-        this.due  = receiveChallanDto.getDue();
+    public Challan() {}
+    public Challan(ChallanDto challanDto) {
+        this.id  = challanDto.getId();
+        this.challanDeliveredVehicle  = challanDto.getChallan_delivered_vehicle();
+        this.challanDeliveredPerson  = challanDto.getChallan_delivered_person();
+        this.challanDeliveredContact  = challanDto.getChallan_delivered_contact();
+        this.challanRevceivedTime  = challanDto.getChallan_revceived_time();
+        this.totalProductCost  = challanDto.getTotal_product_cost();
+        this.vat  = challanDto.getVat();
+        this.tax  = challanDto.getTax();
+        this.otherCost  = challanDto.getOther_cost();
+        this.payable  = challanDto.getPayable();
+        this.totalPaid  = challanDto.getTotal_paid();
+        this.due  = challanDto.getDue();
 
         Supplier supplierTmp = new Supplier();
-        supplierTmp.setId(receiveChallanDto.getSupplier_id());
+        supplierTmp.setId(challanDto.getSupplier_id());
         this.supplier  = supplierTmp;
 
         List<ChallanProduct> challanProductTmp = new ArrayList<ChallanProduct>();
-        for (ChallanProductDto cpDtoTmp: receiveChallanDto.getChallan_products()){
+        for (ChallanProductDto cpDtoTmp: challanDto.getChallan_products()){
             challanProductTmp.add(new ChallanProduct(cpDtoTmp));
         }
 
@@ -260,5 +262,6 @@ public class ReceiveChallan {
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
     }
+
 }
 

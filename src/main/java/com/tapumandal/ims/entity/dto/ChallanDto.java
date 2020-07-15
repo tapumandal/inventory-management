@@ -14,7 +14,7 @@ import java.sql.Date;
 import java.util.List;
 
 @Component
-public class ReceiveChallanDto {
+public class ChallanDto {
 
     @Nullable
     private int id;
@@ -62,7 +62,7 @@ public class ReceiveChallanDto {
     private boolean is_deleted = false;
 
 
-    public ReceiveChallanDto() {
+    public ChallanDto() {
     }
 
     public int getId() {

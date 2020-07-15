@@ -1,8 +1,8 @@
 package com.tapumandal.ims.service.implementation;
 
 import com.google.gson.Gson;
-import com.tapumandal.ims.entity.ReceiveChallan;
-import com.tapumandal.ims.entity.dto.ReceiveChallanDto;
+import com.tapumandal.ims.entity.Challan;
+import com.tapumandal.ims.entity.dto.ChallanDto;
 import com.tapumandal.ims.repository.ChallanManagementRepository;
 import com.tapumandal.ims.service.ChallanManagementService;
 import com.tapumandal.ims.service.UserService;
@@ -27,18 +27,20 @@ public class ChallanManagementServiceImpl implements ChallanManagementService {
     @Autowired
     VehicleService vehicleService;
 
-    private ReceiveChallan receiveChallan;
+    private Challan challan;
 
     public ChallanManagementServiceImpl(){}
 
-    public ChallanManagementServiceImpl(ReceiveChallan receiveChallan){
-        this.receiveChallan = receiveChallan;
+    public ChallanManagementServiceImpl(Challan challan){
+        this.challan = challan;
     }
 
     @Override
-    public ReceiveChallan create(ReceiveChallanDto receiveChallanDto) {
-
-        ReceiveChallan pro = new ReceiveChallan(receiveChallanDto);
+    public Challan create(ChallanDto challanDto) {
+        System.out.println("DTO:");
+        System.out.println(new Gson().toJson(challanDto));
+        Challan pro = new Challan(challanDto);
+        System.out.println("ENTITY:");
         System.out.println(new Gson().toJson(pro));
 //        if(!checkUsers(pro)){
 //            System.out.println("CHECK USER");
@@ -50,68 +52,67 @@ public class ChallanManagementServiceImpl implements ChallanManagementService {
 //            return null;
 //        }
 
-        System.out.println(new Gson().toJson(pro));
 
-        Optional<ReceiveChallan> receiveChallan;
+        Optional<Challan> challan;
 
 //        try{
             int receiveChallanId = receiveChallanRepository.create(pro);
         System.out.println("DELIVERY UNIT ID: "+receiveChallanId);
-            receiveChallan = Optional.ofNullable(receiveChallanRepository.getById(receiveChallanId));
+            challan = Optional.ofNullable(receiveChallanRepository.getById(receiveChallanId));
 //        }catch (Exception e){
 //            return null;
 //        }
 
-        if(receiveChallan.isPresent()){
-            return receiveChallan.get();
+        if(challan.isPresent()){
+            return challan.get();
         }else{
             return null;
         }
     }
 
-    private boolean checkVehicle(ReceiveChallan receiveChallan) {
-//        if(receiveChallan.getVehicle() != null){
-//            return vehicleService.isActive(receiveChallan.getVehicle().getId());
+    private boolean checkVehicle(Challan challan) {
+//        if(challan.getVehicle() != null){
+//            return vehicleService.isActive(challan.getVehicle().getId());
 //        }
         return true;
     }
 
-    private boolean checkUsers(ReceiveChallan receiveChallan) {
+    private boolean checkUsers(Challan challan) {
 
-//        if(receiveChallan.getDsr() != null){
+//        if(challan.getDsr() != null){
 //            System.out.println("getDsr NOT NULL");
-//            if(!userService.isActive(receiveChallan.getDsr().getId()))
+//            if(!userService.isActive(challan.getDsr().getId()))
 //                return false;
 //        }
-//        if(receiveChallan.getDriver() != null){
+//        if(challan.getDriver() != null){
 //            System.out.println("getDriver NOT NULL");
-//            if(!userService.isActive(receiveChallan.getDriver().getId()))
+//            if(!userService.isActive(challan.getDriver().getId()))
 //                return false;
 //        }
-//        if(receiveChallan.getHelpingHand() != null){
+//        if(challan.getHelpingHand() != null){
 //            System.out.println("getHelpingHand NOT NULL");
-//            if(!userService.isActive(receiveChallan.getHelpingHand().getId()))
+//            if(!userService.isActive(challan.getHelpingHand().getId()))
 //                return false;
 //        }
         return true;
     }
 
     @Override
-    public ReceiveChallan update(ReceiveChallanDto receiveChallanDto) {
+    public Challan update(ChallanDto challanDto) {
 
 
-        ReceiveChallan pro = new ReceiveChallan(receiveChallanDto);
+        Challan pro = new Challan(challanDto);
 
-        Optional<ReceiveChallan> receiveChallan;
-        try{
+        Optional<Challan> challan;
+//        try{
             int proId = receiveChallanRepository.update(pro);
-            receiveChallan = Optional.ofNullable(receiveChallanRepository.getById(proId));
-        }catch (Exception e){
-            return null;
-        }
+            challan = Optional.ofNullable(receiveChallanRepository.getById(proId));
+//        }catch (Exception e){
+//            return null;
+//        }
 
-        if(receiveChallan.isPresent()){
-            return receiveChallan.get();
+        if(challan.isPresent()){
+            return challan.get();
         }else{
             return null;
         }
@@ -119,8 +120,8 @@ public class ChallanManagementServiceImpl implements ChallanManagementService {
     }
 
     @Override
-    public List<ReceiveChallan> getAll(Pageable pageable) {
-        Optional<List<ReceiveChallan>> receiveChallans = Optional.ofNullable(receiveChallanRepository.getAll(pageable));
+    public List<Challan> getAll(Pageable pageable) {
+        Optional<List<Challan>> receiveChallans = Optional.ofNullable(receiveChallanRepository.getAll(pageable));
 
         if(receiveChallans.isPresent()){
             return receiveChallans.get();
@@ -130,12 +131,12 @@ public class ChallanManagementServiceImpl implements ChallanManagementService {
     }
 
     @Override
-    public ReceiveChallan getById(int id) {
+    public Challan getById(int id) {
 
-        Optional<ReceiveChallan> receiveChallan = Optional.ofNullable(receiveChallanRepository.getById(id));
+        Optional<Challan> challan = Optional.ofNullable(receiveChallanRepository.getById(id));
 
-        if(receiveChallan.isPresent()){
-            return receiveChallan.get();
+        if(challan.isPresent()){
+            return challan.get();
         }else{
             return null;
         }
@@ -151,12 +152,12 @@ public class ChallanManagementServiceImpl implements ChallanManagementService {
     }
 
     @Override
-    public ReceiveChallan getByValue(String kye, String value) {
+    public Challan getByValue(String kye, String value) {
         return null;
     }
 
     @Override
-    public List<ReceiveChallan> getAllByValue(String kye, String value) {
+    public List<Challan> getAllByValue(String kye, String value) {
         return null;
     }
 

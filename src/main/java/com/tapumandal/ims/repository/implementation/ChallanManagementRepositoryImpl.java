@@ -1,6 +1,6 @@
 package com.tapumandal.ims.repository.implementation;
 
-import com.tapumandal.ims.entity.ReceiveChallan;
+import com.tapumandal.ims.entity.Challan;
 import com.tapumandal.ims.repository.ChallanManagementRepository;
 import com.tapumandal.ims.util.ApplicationPreferences;
 import com.tapumandal.ims.util.MyPagenation;
@@ -29,30 +29,30 @@ public class ChallanManagementRepositoryImpl implements ChallanManagementReposit
 
 
     @Override
-    public int create(ReceiveChallan receiveChallan) {
+    public int create(Challan challan) {
 
-        getSession().saveOrUpdate(receiveChallan);
+        getSession().saveOrUpdate(challan);
         getSession().flush();
         getSession().clear();
-        return receiveChallan.getId();
+        return challan.getId();
     }
 
     @Override
-    public int update(ReceiveChallan receiveChallan) {
+    public int update(Challan challan) {
 
-        Optional<ReceiveChallan> tmpEntity = Optional.ofNullable(getById(receiveChallan.getId()));
+        Optional<Challan> tmpEntity = Optional.ofNullable(getById(challan.getId()));
         getSession().clear();
 
         if(tmpEntity.isPresent()) {
-            getSession().update(receiveChallan);
+            getSession().update(challan);
             getSession().flush();
             getSession().clear();
         }
-        return receiveChallan.getId();
+        return challan.getId();
     }
 
     @Override
-    public List<ReceiveChallan> getAll(Pageable pageable) {
+    public List<Challan> getAll(Pageable pageable) {
 
 
         Query resQuery = getQuery();
@@ -78,23 +78,23 @@ public class ChallanManagementRepositoryImpl implements ChallanManagementReposit
     }
 
     private Query getQuery(){
-        String query = "FROM ReceiveChallan P WHERE P.companyId = "+ ApplicationPreferences.getUser().getCompany().getId();
+        String query = "FROM Challan P WHERE P.companyId = "+ ApplicationPreferences.getUser().getCompany().getId();
         Query resQuery =  getSession().createQuery(query);
 
         return resQuery;
     }
 
     @Override
-    public ReceiveChallan getById(int id) {
+    public Challan getById(int id) {
 
-        String query = "FROM ReceiveChallan P WHERE P.id = "+id+" AND P.companyId = "+ApplicationPreferences.getUser().getCompany().getId();
-        return (ReceiveChallan) getSession().createQuery(query).uniqueResult();
+        String query = "FROM Challan P WHERE P.id = "+id+" AND P.companyId = "+ApplicationPreferences.getUser().getCompany().getId();
+        return (Challan) getSession().createQuery(query).uniqueResult();
     }
 
     @Override
-    public List<ReceiveChallan> getByKeyAndValue(String key, String value) {
-        return (List<ReceiveChallan>) getSession().createQuery(
-                "from ReceiveChallan where "+key+" = :value"
+    public List<Challan> getByKeyAndValue(String key, String value) {
+        return (List<Challan>) getSession().createQuery(
+                "from Challan where "+key+" = :value"
         ).setParameter("value", value)
                 .getResultList();
     }
@@ -102,11 +102,11 @@ public class ChallanManagementRepositoryImpl implements ChallanManagementReposit
     @Override
     public boolean delete(int id) {
         int companyId = ApplicationPreferences.getUser().getCompany().getId();
-        Optional<ReceiveChallan> tmpEntity = Optional.ofNullable(getById(id));
+        Optional<Challan> tmpEntity = Optional.ofNullable(getById(id));
         if(tmpEntity.isPresent()){
-            ReceiveChallan receiveChallan = tmpEntity.get();
+            Challan challan = tmpEntity.get();
 
-            getSession().delete(receiveChallan);
+            getSession().delete(challan);
             return true;
         }else{
             return false;
