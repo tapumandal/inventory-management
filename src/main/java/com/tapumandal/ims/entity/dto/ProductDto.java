@@ -28,8 +28,12 @@ public class ProductDto {
     private String name;
 
     @NotEmpty
-    @Size(min=2, max = 50, message = "Product must have a price")
-    private String pricePerUnit;
+    @Size(min=2, max = 50, message = "Product must have a buying price")
+    private String buying_price_per_unit;
+
+    @NotEmpty
+    @Size(min=2, max = 50, message = "Product must have a selling price")
+    private String selling_price_per_unit;
 
     private boolean active = true;
 
@@ -51,12 +55,20 @@ public class ProductDto {
         this.name = name;
     }
 
-    public String getPricePerUnit() {
-        return pricePerUnit;
+    public String getBuying_price_per_unit() {
+        return buying_price_per_unit;
     }
 
-    public void setPricePerUnit(String pricePerUnit) {
-        this.pricePerUnit = pricePerUnit;
+    public void setBuying_price_per_unit(String buying_price_per_unit) {
+        this.buying_price_per_unit = buying_price_per_unit;
+    }
+
+    public String getSelling_price_per_unit() {
+        return selling_price_per_unit;
+    }
+
+    public void setSelling_price_per_unit(String selling_price_per_unit) {
+        this.selling_price_per_unit = selling_price_per_unit;
     }
 
     public boolean isActive() {

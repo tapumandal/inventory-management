@@ -32,12 +32,12 @@ public class ProductServiceImpl implements ProductService {
         Product pro = new Product(productDto);
         Optional<Product> product;
 
-        try{
+//        try{
             int productId = productRepository.create(pro);
             product = Optional.ofNullable(productRepository.getById(productId));
-        }catch (Exception e){
-            return null;
-        }
+//        }catch (Exception e){
+//            return null;
+//        }
 
         if(product.isPresent()){
             return product.get();
