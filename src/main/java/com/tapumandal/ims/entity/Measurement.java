@@ -29,11 +29,20 @@ public class Measurement {
     @Column(name = "unit_name")
     private String unitName;
 
+    @Column(name = "unit_quantity")
+    private int unitQuantity = 1;
+
     @Column(name = "package_name")
     private String packageName;
 
     @Column(name = "unit_per_package")
-    private String unitPerPackage;
+    private int unitPerPackage = 1;
+
+    @Column(name = "package_name_level_2")
+    private String packageNameLevel2;
+
+    @Column(name = "package_level_2_quantity")
+    private int packageLevel2Quantity = 1;
 
     @Column(name = "company_id", updatable = false)
     protected int companyId = ApplicationPreferences.getUser().getCompany().getId();
@@ -74,14 +83,15 @@ public class Measurement {
     public Measurement() {}
 
     public Measurement(MeasurementDto measurementDto) {
-        this.setId(measurementDto.getId());
-        this.setUnitName(measurementDto.getUnitName());
-        this.setPackageName(measurementDto.getPackageName());
-        this.setUnitPerPackage(measurementDto.getUnitPerPackage());
-
-        for(ProductDto productDto: measurementDto.getProducts()){
-            products.add(new Product(productDto));
-        }
+            this.id = measurementDto.getId();
+            this.unitName = measurementDto.getUnit_name();
+            this.unitQuantity = measurementDto.getUnit_quantity();
+            this.packageName = measurementDto.getPackage_name();
+            this.unitPerPackage = measurementDto.getUnit_per_package();
+            this.packageNameLevel2 = measurementDto.getPackage_name_level_2();
+            this.packageLevel2Quantity = measurementDto.getPackage_level_2_quantity();
+            this.isActive = measurementDto.isIs_active();
+            this.isDeleted = measurementDto.isIs_deleted();
     }
 
     public int getId() {
@@ -93,27 +103,59 @@ public class Measurement {
     }
 
     public String getUnitName() {
-        return unitName;
+        return unitName == null ? "" : unitName;
     }
 
     public void setUnitName(String unitName) {
         this.unitName = unitName;
     }
 
+    public int getUnitQuantity() {
+        return unitQuantity;
+    }
+
+    public void setUnitQuantity(int unitQuantity) {
+        this.unitQuantity = unitQuantity;
+    }
+
     public String getPackageName() {
-        return packageName;
+        return packageName == null ? "" : packageName;
     }
 
     public void setPackageName(String packageName) {
         this.packageName = packageName;
     }
 
-    public String getUnitPerPackage() {
+    public int getUnitPerPackage() {
         return unitPerPackage;
     }
 
-    public void setUnitPerPackage(String unitPerPackage) {
+    public void setUnitPerPackage(int unitPerPackage) {
         this.unitPerPackage = unitPerPackage;
+    }
+
+    public String getPackageNameLevel2() {
+        return packageNameLevel2 == null ? "" : packageNameLevel2;
+    }
+
+    public void setPackageNameLevel2(String packageNameLevel2) {
+        this.packageNameLevel2 = packageNameLevel2;
+    }
+
+    public int getPackageLevel2Quantity() {
+        return packageLevel2Quantity;
+    }
+
+    public void setPackageLevel2Quantity(int packageLevel2Quantity) {
+        this.packageLevel2Quantity = packageLevel2Quantity;
+    }
+
+    public int getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(int companyId) {
+        this.companyId = companyId;
     }
 
     public boolean isActive() {
@@ -151,16 +193,8 @@ public class Measurement {
     public List<Product> getProducts() {
         return products;
     }
+
     public void setProducts(List<Product> products) {
         this.products = products;
-    }
-
-
-    public int getCompanyId() {
-        return companyId;
-    }
-
-    public void setCompanyId(int companyId) {
-        this.companyId = companyId;
     }
 }

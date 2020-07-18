@@ -14,19 +14,24 @@ public class MeasurementDto {
     @NotNull
     private int id;
 
-    @NotEmpty
-    @Size(min=2, max = 50, message = "Measurement must have a Unit Name")
-    private String unitName;
+    @NotEmpty(message = "Measurement must have a unit_name")
+    private String unit_name;
 
-    @NotEmpty
-    @Size(min=2, max = 50, message = "Measurement must have a Unit Name")
-    private String packageName;
+    @NotNull(message = "Measurement must have a unit_quantity")
+    private int unit_quantity = 1;
 
-    @NotEmpty
-    @Size(min=2, max = 50, message = "Set the Unit per Package")
-    private String unitPerPackage;
+    private String package_name;
 
-    Set<ProductDto> products = new HashSet<ProductDto>();
+    private int unit_per_package = 1;
+
+    private String package_name_level_2;
+
+    private int package_level_2_quantity = 1;
+
+    private boolean is_active = true;
+
+    private boolean is_deleted = false;
+
 
 
     public int getId() {
@@ -37,35 +42,67 @@ public class MeasurementDto {
         this.id = id;
     }
 
-    public String getUnitName() {
-        return unitName;
+    public String getUnit_name() {
+        return unit_name;
     }
 
-    public void setUnitName(String unitName) {
-        this.unitName = unitName;
+    public void setUnit_name(String unit_name) {
+        this.unit_name = unit_name;
     }
 
-    public String getPackageName() {
-        return packageName;
+    public int getUnit_quantity() {
+        return unit_quantity;
     }
 
-    public void setPackageName(String packageName) {
-        this.packageName = packageName;
+    public void setUnit_quantity(int unit_quantity) {
+        this.unit_quantity = unit_quantity;
     }
 
-    public String getUnitPerPackage() {
-        return unitPerPackage;
+    public String getPackage_name() {
+        return package_name;
     }
 
-    public void setUnitPerPackage(String unitPerPackage) {
-        this.unitPerPackage = unitPerPackage;
+    public void setPackage_name(String package_name) {
+        this.package_name = package_name;
     }
 
-    public Set<ProductDto> getProducts() {
-        return products;
+    public int getUnit_per_package() {
+        return unit_per_package;
     }
 
-    public void setProducts(Set<ProductDto> products) {
-        this.products = products;
+    public void setUnit_per_package(int unit_per_package) {
+        this.unit_per_package = unit_per_package;
+    }
+
+    public String getPackage_name_level_2() {
+        return package_name_level_2;
+    }
+
+    public void setPackage_name_level_2(String package_name_level_2) {
+        this.package_name_level_2 = package_name_level_2;
+    }
+
+    public int getPackage_level_2_quantity() {
+        return package_level_2_quantity;
+    }
+
+    public void setPackage_level_2_quantity(int package_level_2_quantity) {
+        this.package_level_2_quantity = package_level_2_quantity;
+    }
+
+    public boolean isIs_active() {
+        return is_active;
+    }
+
+    public void setIs_active(boolean is_active) {
+        this.is_active = is_active;
+    }
+
+    public boolean isIs_deleted() {
+        return is_deleted;
+    }
+
+    public void setIs_deleted(boolean is_deleted) {
+        this.is_deleted = is_deleted;
     }
 }
