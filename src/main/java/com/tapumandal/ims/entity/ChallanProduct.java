@@ -18,11 +18,11 @@ public class ChallanProduct {
     @Column(name = "id", unique = true, nullable = false)
     private int id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "measurement_id")
     private Measurement measurement;
 
@@ -32,7 +32,7 @@ public class ChallanProduct {
     @Column(name = "selling_price")
     private int sellingPrice;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name="warehouse_id", nullable=true)
     private Warehouse warehouse;
 

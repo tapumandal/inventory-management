@@ -26,7 +26,7 @@ public class MeasurementDto {
 
     private String package_name_level_2;
 
-    private int package_level_2_quantity = 1;
+    private int package_per_package_l2 = 1;
 
     private boolean is_active = true;
 
@@ -82,12 +82,12 @@ public class MeasurementDto {
         this.package_name_level_2 = package_name_level_2;
     }
 
-    public int getPackage_level_2_quantity() {
-        return package_level_2_quantity;
+    public int getPackage_per_package_l2() {
+        return package_per_package_l2;
     }
 
-    public void setPackage_level_2_quantity(int package_level_2_quantity) {
-        this.package_level_2_quantity = package_level_2_quantity;
+    public void setPackage_per_package_l2(int package_per_package_l2) {
+        this.package_per_package_l2 = package_per_package_l2;
     }
 
     public boolean isIs_active() {

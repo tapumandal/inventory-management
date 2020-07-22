@@ -41,8 +41,8 @@ public class Measurement {
     @Column(name = "package_name_level_2")
     private String packageNameLevel2;
 
-    @Column(name = "package_level_2_quantity")
-    private int packageLevel2Quantity = 1;
+    @Column(name = "package_per_package_l2")
+    private int packagePerPackageL2 = 1;
 
     @Column(name = "company_id", updatable = false)
     protected int companyId = ApplicationPreferences.getUser().getCompany().getId();
@@ -89,7 +89,7 @@ public class Measurement {
             this.packageName = measurementDto.getPackage_name();
             this.unitPerPackage = measurementDto.getUnit_per_package();
             this.packageNameLevel2 = measurementDto.getPackage_name_level_2();
-            this.packageLevel2Quantity = measurementDto.getPackage_level_2_quantity();
+            this.packagePerPackageL2 = measurementDto.getPackage_per_package_l2();
             this.isActive = measurementDto.isIs_active();
             this.isDeleted = measurementDto.isIs_deleted();
     }
@@ -142,12 +142,12 @@ public class Measurement {
         this.packageNameLevel2 = packageNameLevel2;
     }
 
-    public int getPackageLevel2Quantity() {
-        return packageLevel2Quantity;
+    public int getPackagePerPackageL2() {
+        return packagePerPackageL2;
     }
 
-    public void setPackageLevel2Quantity(int packageLevel2Quantity) {
-        this.packageLevel2Quantity = packageLevel2Quantity;
+    public void setPackagePerPackageL2(int packagePerPackageL2) {
+        this.packagePerPackageL2 = packagePerPackageL2;
     }
 
     public int getCompanyId() {

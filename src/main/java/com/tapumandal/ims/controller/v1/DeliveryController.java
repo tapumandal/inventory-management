@@ -1,8 +1,8 @@
 package com.tapumandal.ims.controller.v1;
 
-import com.tapumandal.ims.entity.DeliveryUnit;
-import com.tapumandal.ims.entity.dto.DeliveryUnitDto;
-import com.tapumandal.ims.service.DeliveryUnitService;
+import com.tapumandal.ims.entity.Delivery;
+import com.tapumandal.ims.entity.dto.DeliveryDto;
+import com.tapumandal.ims.service.DeliveryService;
 import com.tapumandal.ims.util.CommonResponseArray;
 import com.tapumandal.ims.util.CommonResponseSingle;
 import com.tapumandal.ims.util.ControllerHelper;
@@ -18,87 +18,88 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/deliveryunit")
-public class DeliveryController extends ControllerHelper<DeliveryUnit> {
+@RequestMapping("/api/v1/delivery")
+public class DeliveryController extends ControllerHelper<Delivery> {
 
     @Autowired
-    DeliveryUnitService deliveryUnitService;
+    DeliveryService deliverySerice;
 
     @PostMapping(path = "/create")
-    public CommonResponseSingle createDeliveryUnit(@RequestBody @Valid DeliveryUnitDto deliveryUnitDto, HttpServletRequest request) {
+    public CommonResponseSingle<Delivery> createProduct(@RequestBody @Valid DeliveryDto deliveryDto, HttpServletRequest request) {
 
+//        Delivery delivery = new Delivery(receiveChallanDto);
         storeUserDetails(request);
 
-        DeliveryUnit deliveryUnit = deliveryUnitService.create(deliveryUnitDto);
+        Delivery delivery = deliverySerice.create(deliveryDto);
 
-        if (deliveryUnit != null) {
-            return response(true, HttpStatus.CREATED, "New deliveryUnit inserted successfully", deliveryUnit);
-        } else if (deliveryUnit == null) {
-            return response(false, HttpStatus.BAD_REQUEST, "Something is wrong please contact", (DeliveryUnit) null);
+        if (delivery != null) {
+            return response(true, HttpStatus.CREATED, "New delivery inserted successfully", delivery);
+        } else if (delivery == null) {
+            return response(false, HttpStatus.BAD_REQUEST, "Something is wrong please contact", (Delivery) null);
         }
-        return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong with the application", (DeliveryUnit) null);
+        return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong with the application", (Delivery) null);
     }
 
     @GetMapping(path = "/{id}")
-    public CommonResponseSingle<DeliveryUnit> getDeliveryUnit(@PathVariable("id") int id, HttpServletRequest request) {
+    public CommonResponseSingle<Delivery> getProduct(@PathVariable("id") int id, HttpServletRequest request) {
 
         storeUserDetails(request);
 
-        DeliveryUnit deliveryUnit = deliveryUnitService.getById(id);
+        Delivery delivery = deliverySerice.getById(id);
 
-        if (deliveryUnit != null) {
-            return response(true, HttpStatus.FOUND, "DeliveryUnit by id: " + id, deliveryUnit);
-        } else if (deliveryUnit == null) {
-            return response(false, HttpStatus.NO_CONTENT, "DeliveryUnit not found or deleted", (DeliveryUnit) null);
+        if (delivery != null) {
+            return response(true, HttpStatus.FOUND, "Delivery by id: " + id, delivery);
+        } else if (delivery == null) {
+            return response(false, HttpStatus.NO_CONTENT, "Delivery not found or deleted", (Delivery) null);
         } else {
-            return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong", (DeliveryUnit) null);
+            return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong", (Delivery) null);
         }
     }
 
     @GetMapping(path = "/list")
-    public CommonResponseArray<DeliveryUnit> getAll(HttpServletRequest request, Pageable pageable) {
+    public CommonResponseArray<Delivery> getAll(HttpServletRequest request, Pageable pageable) {
 
         storeUserDetails(request);
 
-        List<DeliveryUnit> deliveryUnits = deliveryUnitService.getAll(pageable);
+        List<Delivery> products = deliverySerice.getAll(pageable);
 
-        MyPagenation myPagenation = managePagenation(request, deliveryUnitService.getPageable(pageable), pageable);
+        MyPagenation myPagenation = managePagenation(request, deliverySerice.getPageable(pageable), pageable);
 
-        if (!deliveryUnits.isEmpty()) {
-            return response(true, HttpStatus.FOUND, "All deliveryUnit list", deliveryUnits, myPagenation);
-        } else if (deliveryUnits.isEmpty()) {
-            return response(false, HttpStatus.NO_CONTENT, "No deliveryUnit found", new ArrayList<DeliveryUnit>(), myPagenation);
+        if (!products.isEmpty()) {
+            return response(true, HttpStatus.FOUND, "All delivery list", products, myPagenation);
+        } else if (products.isEmpty()) {
+            return response(false, HttpStatus.NO_CONTENT, "No delivery found", new ArrayList<Delivery>(), myPagenation);
         } else {
-            return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong", new ArrayList<DeliveryUnit>(), myPagenation);
+            return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong", new ArrayList<Delivery>(), myPagenation);
         }
 
     }
 
 
     @PostMapping(path = "/update")
-    public CommonResponseSingle updateDeliveryUnit(@RequestBody DeliveryUnitDto deliveryUnitDto, HttpServletRequest request) {
+    public CommonResponseSingle updateProduct(@RequestBody DeliveryDto deliveryDto, HttpServletRequest request) {
 
         storeUserDetails(request);
 
-        DeliveryUnit deliveryUnit = deliveryUnitService.update(deliveryUnitDto);
+        Delivery delivery = deliverySerice.update(deliveryDto);
 
-        if (deliveryUnit != null) {
-            return response(true, HttpStatus.OK, "New deliveryUnit inserted successfully", deliveryUnit);
-        } else if (deliveryUnit == null) {
-            return response(false, HttpStatus.BAD_REQUEST, "Something is wrong with data", (DeliveryUnit) null);
+        if (delivery != null) {
+            return response(true, HttpStatus.OK, "New Delivery inserted successfully", delivery);
+        } else if (delivery == null) {
+            return response(false, HttpStatus.BAD_REQUEST, "Something is wrong with data", (Delivery) null);
         }
-        return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong with the application", (DeliveryUnit) null);
+        return response(false, HttpStatus.INTERNAL_SERVER_ERROR, "Something is wrong with the application", (Delivery) null);
     }
 
     @DeleteMapping(path = "/{id}")
-    public CommonResponseSingle<DeliveryUnit> deleteDeliveryUnit(@PathVariable("id") int id, HttpServletRequest request) {
+    public CommonResponseSingle<Delivery> deleteProduct(@PathVariable("id") int id, HttpServletRequest request) {
 
         storeUserDetails(request);
 
-        if (deliveryUnitService.deleteById(id)) {
-            return response(true, HttpStatus.OK, "DeliveryUnit by id " + id + " is deleted", (DeliveryUnit) null);
+        if (deliverySerice.deleteById(id)) {
+            return response(true, HttpStatus.OK, "Delivery by id " + id + " is deleted", (Delivery) null);
         } else{
-            return response(false, HttpStatus.NOT_FOUND, "DeliveryUnit not found or deleted", (DeliveryUnit) null);
+            return response(false, HttpStatus.NOT_FOUND, "Delivery not found or deleted", (Delivery) null);
         }
     }
 
