@@ -1,6 +1,7 @@
 package com.tapumandal.ims.service.implementation;
 
 import com.tapumandal.ims.entity.Company;
+import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.entity.dto.CompanyDto;
 import com.tapumandal.ims.repository.CompanyRepository;
 import com.tapumandal.ims.service.CompanyService;
@@ -112,7 +113,14 @@ public class CompanyServiceImpl implements CompanyService {
 
     @Override
     public boolean isActive(int id) {
-        return company.isActive();
+        Optional<Company> company = Optional.ofNullable(companyRepository.getById(id));
+        if(company.isPresent()){
+            if(company.get().isActive()){
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 
     @Override

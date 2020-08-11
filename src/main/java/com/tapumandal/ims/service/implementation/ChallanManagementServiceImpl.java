@@ -1,17 +1,17 @@
 package com.tapumandal.ims.service.implementation;
 
 import com.google.gson.Gson;
-import com.tapumandal.ims.entity.Challan;
+import com.tapumandal.ims.entity.*;
 import com.tapumandal.ims.entity.dto.ChallanDto;
 import com.tapumandal.ims.repository.ChallanManagementRepository;
-import com.tapumandal.ims.service.ChallanManagementService;
-import com.tapumandal.ims.service.UserService;
-import com.tapumandal.ims.service.VehicleService;
+import com.tapumandal.ims.service.*;
 import com.tapumandal.ims.util.MyPagenation;
+import com.tapumandal.ims.util.ResourceVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,10 +22,7 @@ public class ChallanManagementServiceImpl implements ChallanManagementService {
     ChallanManagementRepository receiveChallanRepository;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
-    VehicleService vehicleService;
+    ResourceVerifier resourceVerifier;
 
     private Challan challan;
 
@@ -37,26 +34,25 @@ public class ChallanManagementServiceImpl implements ChallanManagementService {
 
     @Override
     public Challan create(ChallanDto challanDto) {
-        System.out.println("DTO:");
-        System.out.println(new Gson().toJson(challanDto));
-        Challan pro = new Challan(challanDto);
-        System.out.println("ENTITY:");
-        System.out.println(new Gson().toJson(pro));
-//        if(!checkUsers(pro)){
-//            System.out.println("CHECK USER");
-//            return null;
-//        }
-//
-//        if(!checkVehicle(pro)){
-//            System.out.println("CHECK VEHICLE");
-//            return null;
-//        }
+
+        Challan cha = new Challan(challanDto);
+
+        System.out.println(new Gson().toJson(cha));
+
+        if(!resourceVerifier.checkSupplier(cha.getSupplier().getId())){
+            System.out.println("CHECK Suppliar Id");
+            return null;
+        }
+        if(!resourceVerifier.checkChallanProduct(cha.getChallanProducts())){
+            System.out.println("CHECK getChallanProducts");
+            return null;
+        }
 
 
         Optional<Challan> challan;
 
 //        try{
-            int receiveChallanId = receiveChallanRepository.create(pro);
+            int receiveChallanId = receiveChallanRepository.create(cha);
         System.out.println("DELIVERY UNIT ID: "+receiveChallanId);
             challan = Optional.ofNullable(receiveChallanRepository.getById(receiveChallanId));
 //        }catch (Exception e){
@@ -70,42 +66,16 @@ public class ChallanManagementServiceImpl implements ChallanManagementService {
         }
     }
 
-    private boolean checkVehicle(Challan challan) {
-//        if(challan.getVehicle() != null){
-//            return vehicleService.isActive(challan.getVehicle().getId());
-//        }
-        return true;
-    }
-
-    private boolean checkUsers(Challan challan) {
-
-//        if(challan.getDsr() != null){
-//            System.out.println("getDsr NOT NULL");
-//            if(!userService.isActive(challan.getDsr().getId()))
-//                return false;
-//        }
-//        if(challan.getDriver() != null){
-//            System.out.println("getDriver NOT NULL");
-//            if(!userService.isActive(challan.getDriver().getId()))
-//                return false;
-//        }
-//        if(challan.getHelpingHand() != null){
-//            System.out.println("getHelpingHand NOT NULL");
-//            if(!userService.isActive(challan.getHelpingHand().getId()))
-//                return false;
-//        }
-        return true;
-    }
 
     @Override
     public Challan update(ChallanDto challanDto) {
 
 
-        Challan pro = new Challan(challanDto);
+        Challan cha = new Challan(challanDto);
 
         Optional<Challan> challan;
 //        try{
-            int proId = receiveChallanRepository.update(pro);
+            int proId = receiveChallanRepository.update(cha);
             challan = Optional.ofNullable(receiveChallanRepository.getById(proId));
 //        }catch (Exception e){
 //            return null;
@@ -163,6 +133,13 @@ public class ChallanManagementServiceImpl implements ChallanManagementService {
 
     @Override
     public boolean isActive(int id) {
+        Optional<Challan> challan = Optional.ofNullable(receiveChallanRepository.getById(id));
+        if(challan.isPresent()){
+            if(challan.get().isActive()){
+                return true;
+            }
+            return false;
+        }
         return false;
     }
 

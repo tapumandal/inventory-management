@@ -1,5 +1,6 @@
 package com.tapumandal.ims.service.implementation;
 
+import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.entity.Warehouse;
 import com.tapumandal.ims.entity.dto.WarehouseDto;
 import com.tapumandal.ims.repository.WarehouseRepository;
@@ -113,7 +114,14 @@ public class WarehouseServiceImpl implements WarehouseService {
 
     @Override
     public boolean isActive(int id) {
-        return warehouse.isActive();
+        Optional<Warehouse> warehouse = Optional.ofNullable(warehouseRepository.getById(id));
+        if(warehouse.isPresent()){
+            if(warehouse.get().isActive()){
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 
     @Override

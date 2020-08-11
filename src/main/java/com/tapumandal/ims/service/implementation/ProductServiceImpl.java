@@ -1,10 +1,13 @@
 package com.tapumandal.ims.service.implementation;
 
+import com.tapumandal.ims.entity.Measurement;
 import com.tapumandal.ims.entity.Product;
 import com.tapumandal.ims.entity.dto.ProductDto;
 import com.tapumandal.ims.repository.ProductRepository;
+import com.tapumandal.ims.service.MeasurementService;
 import com.tapumandal.ims.service.ProductService;
 import com.tapumandal.ims.util.MyPagenation;
+import com.tapumandal.ims.util.ResourceVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +20,12 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     ProductRepository productRepository;
+
+    @Autowired
+    MeasurementService measurementService;
+
+    @Autowired
+    ResourceVerifier resourceVerifier;
 
     private Product product;
 
@@ -31,6 +40,10 @@ public class ProductServiceImpl implements ProductService {
 
         Product pro = new Product(productDto);
         Optional<Product> product;
+
+        if(!resourceVerifier.checkMeasurements(pro.getMeasurement())){
+            return null;
+        }
 
 //        try{
             int productId = productRepository.create(pro);
@@ -112,7 +125,14 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public boolean isActive(int id) {
-        return product.isActive();
+        Optional<Product> product = Optional.ofNullable(productRepository.getById(id));
+        if(product.isPresent()){
+            if(product.get().isActive()){
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 
     @Override

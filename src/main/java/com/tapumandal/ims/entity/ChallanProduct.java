@@ -18,7 +18,7 @@ public class ChallanProduct {
     @Column(name = "id", unique = true, nullable = false)
     private int id;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "product_id")
     private Product product;
 

@@ -1,6 +1,7 @@
 package com.tapumandal.ims.service.implementation;
 
 import com.tapumandal.ims.entity.Measurement;
+import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.entity.dto.MeasurementDto;
 import com.tapumandal.ims.repository.MeasurementRepository;
 import com.tapumandal.ims.repository.ProductRepository;
@@ -114,7 +115,15 @@ public class MeasurementServiceImpl implements MeasurementService {
 
     @Override
     public boolean isActive(int id) {
-        return measurement.isActive();
+
+        Optional<Measurement> measurement = Optional.ofNullable(measurementRepository.getById(id));
+        if(measurement.isPresent()){
+            if(measurement.get().isActive()){
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 
     @Override

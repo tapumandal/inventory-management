@@ -2,6 +2,7 @@ package com.tapumandal.ims.service.implementation;
 
 import com.google.gson.Gson;
 import com.tapumandal.ims.entity.Delivery;
+import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.entity.dto.DeliveryDto;
 import com.tapumandal.ims.repository.DeliveryRepository;
 import com.tapumandal.ims.service.ChallanManagementService;
@@ -38,14 +39,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public Delivery create(DeliveryDto deliveryDto) {
-        System.out.println("DTO:");
-        System.out.println(new Gson().toJson(deliveryDto));
         Delivery pro = new Delivery(deliveryDto);
-        System.out.println("XXXXXXXXXXXXXXX");
-        System.out.println("XXXXXXXXXXXXXXX");
-        System.out.println("XXXXXXXXXXXXXXX");
-        System.out.println("ENTITY:");
-        System.out.println(new Gson().toJson(pro));
 //        if(!checkUsers(pro)){
 //            System.out.println("CHECK USER");
 //            return null;
@@ -167,6 +161,13 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public boolean isActive(int id) {
+        Optional<Delivery> delivery = Optional.ofNullable(deliveryRepository.getById(id));
+        if(delivery.isPresent()){
+            if(delivery.get() != null){
+                return true;
+            }
+            return false;
+        }
         return false;
     }
 

@@ -1,6 +1,7 @@
 package com.tapumandal.ims.service.implementation;
 
 import com.tapumandal.ims.entity.Supplier;
+import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.entity.dto.SupplierDto;
 import com.tapumandal.ims.repository.SupplierRepository;
 import com.tapumandal.ims.service.SupplierService;
@@ -113,7 +114,14 @@ public class SupplierServiceImpl implements SupplierService {
 
     @Override
     public boolean isActive(int id) {
-        return supplier.isActive();
+        Optional<Supplier> supplier = Optional.ofNullable(supplierRepository.getById(id));
+        if(supplier.isPresent()){
+            if(supplier.get().isActive()){
+                return true;
+            }
+            return false;
+        }
+        return false;
     }
 
     @Override

@@ -196,6 +196,13 @@ public class DeliveryUnitServiceImpl implements DeliveryUnitService {
 
     @Override
     public boolean isActive(int id) {
+        Optional<DeliveryUnit> deliveryUnit = Optional.ofNullable(deliveryUnitRepository.getById(id));
+        if(deliveryUnit.isPresent()){
+            if(deliveryUnit.get() != null){
+                return true;
+            }
+            return false;
+        }
         return false;
     }
 
