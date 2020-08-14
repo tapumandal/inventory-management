@@ -21,7 +21,7 @@ public class DeliveryUnitDto {
     private int driver_id;
 
     @Nullable
-    private int helping_hand;
+    private int helping_hand_id;
 
     private boolean isActive = true;
 
@@ -59,12 +59,12 @@ public class DeliveryUnitDto {
         this.driver_id = driver_id;
     }
 
-    public int getHelping_hand() {
-        return helping_hand;
+    public int getHelping_hand_id() {
+        return helping_hand_id;
     }
 
-    public void setHelping_hand(int helping_hand) {
-        this.helping_hand = helping_hand;
+    public void setHelping_hand_id(int helping_hand_id) {
+        this.helping_hand_id = helping_hand_id;
     }
 
     public boolean isActive() {

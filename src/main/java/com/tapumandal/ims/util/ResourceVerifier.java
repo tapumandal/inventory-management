@@ -30,6 +30,7 @@ public class ResourceVerifier {
     WarehouseService warehouseService;
 
 
+
     public boolean checkChallanProduct(List<ChallanProduct> challanProducts) {
         for (ChallanProduct tmpChallanPro: challanProducts) {
 
@@ -48,6 +49,19 @@ public class ResourceVerifier {
                 System.out.println("checkWarehouse");
                 return false;
             }
+        }
+        return true;
+    }
+
+    public boolean checkUser(int id) {
+        if(!userService.isActive(id)){
+            return false;
+        }
+        return true;
+    }
+    public boolean checkVehicle(int id) {
+        if(!vehicleService.isActive(id)){
+            return false;
         }
         return true;
     }

@@ -10,6 +10,7 @@ import com.tapumandal.ims.service.DeliveryUnitService;
 import com.tapumandal.ims.service.UserService;
 import com.tapumandal.ims.service.VehicleService;
 import com.tapumandal.ims.util.MyPagenation;
+import com.tapumandal.ims.util.ResourceVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,9 @@ public class DeliveryUnitServiceImpl implements DeliveryUnitService {
     @Autowired
     VehicleService vehicleService;
 
+    @Autowired
+    ResourceVerifier resourceVerifier;
+
     private DeliveryUnit deliveryUnit;
 
     public DeliveryUnitServiceImpl(){}
@@ -40,28 +44,47 @@ public class DeliveryUnitServiceImpl implements DeliveryUnitService {
     @Override
     public DeliveryUnit create(DeliveryUnitDto deliveryUnitDto) {
 
-        DeliveryUnit pro = new DeliveryUnit(deliveryUnitDto);
-        System.out.println(new Gson().toJson(pro));
-        if(!checkUsers(pro)){
-            System.out.println("CHECK USER");
+
+        System.out.println(new Gson().toJson(deliveryUnitDto));
+        DeliveryUnit dUnit = new DeliveryUnit(deliveryUnitDto);
+        System.out.println(new Gson().toJson(dUnit));
+
+        if(!resourceVerifier.checkUser(dUnit.getDsr().getId()) ){
+            System.out.println("CHECK DSR");
             return null;
         }
 
-        if(!checkVehicle(pro)){
-            System.out.println("CHECK VEHICLE");
-            return null;
+        if(dUnit.getDriver() != null){
+            if(!resourceVerifier.checkUser(dUnit.getDriver().getId())){
+                System.out.println("CHECK Driver");
+                return null;
+            }
         }
 
-        System.out.println(new Gson().toJson(pro));
+        if(dUnit.getHelpingHand() != null){
+            if(!resourceVerifier.checkUser(dUnit.getHelpingHand().getId())){
+                System.out.println("CHECK Helping Hand");
+                return null;
+            }
+        }
 
-        removeUserFromAnotherDeliveryUnit(pro);
+        if(dUnit.getVehicle() != null){
+            if(!resourceVerifier.checkVehicle(dUnit.getVehicle().getId())){
+                System.out.println("CHECK VEHICLE");
+                return null;
+            }
+        }
+
+        System.out.println(new Gson().toJson(dUnit));
+
+        removeUserFromAnotherDeliveryUnit(dUnit);
 
         System.out.println("AFTER REMOVE DELIVERY UNIT");
 
         Optional<DeliveryUnit> deliveryUnit;
 
 //        try{
-            int deliveryUnitId = deliveryUnitRepository.create(pro);
+            int deliveryUnitId = deliveryUnitRepository.create(dUnit);
         System.out.println("DELIVERY UNIT ID: "+deliveryUnitId);
             deliveryUnit = Optional.ofNullable(deliveryUnitRepository.getById(deliveryUnitId));
 //        }catch (Exception e){
@@ -75,55 +98,28 @@ public class DeliveryUnitServiceImpl implements DeliveryUnitService {
         }
     }
 
-    private boolean checkVehicle(DeliveryUnit deliveryUnit) {
-        if(deliveryUnit.getVehicle() != null){
-            return vehicleService.isActive(deliveryUnit.getVehicle().getId());
-        }
-        return true;
-    }
+    private void removeUserFromAnotherDeliveryUnit(DeliveryUnit dUnit) {
 
-    private boolean checkUsers(DeliveryUnit deliveryUnit) {
-
-        if(deliveryUnit.getDsr() != null){
-            System.out.println("getDsr NOT NULL");
-            if(!userService.isActive(deliveryUnit.getDsr().getId()))
-                return false;
-        }
-        if(deliveryUnit.getDriver() != null){
-            System.out.println("getDriver NOT NULL");
-            if(!userService.isActive(deliveryUnit.getDriver().getId()))
-                return false;
-        }
-        if(deliveryUnit.getHelpingHand() != null){
-            System.out.println("getHelpingHand NOT NULL");
-            if(!userService.isActive(deliveryUnit.getHelpingHand().getId()))
-                return false;
-        }
-        return true;
-    }
-
-    private void removeUserFromAnotherDeliveryUnit(DeliveryUnit pro) {
-
-        if(pro.getDsr() != null){
-            Optional<List<DeliveryUnit>> deliveryUnit = Optional.ofNullable(deliveryUnitRepository.getByKeyAndValue("dsr_id", String.valueOf(pro.getDsr().getId())));
+        if(dUnit.getDsr() != null){
+            Optional<List<DeliveryUnit>> deliveryUnit = Optional.ofNullable(deliveryUnitRepository.getByKeyAndValue("dsr_id", String.valueOf(dUnit.getDsr().getId())));
             if(deliveryUnit.isPresent() && !deliveryUnit.get().isEmpty()){
                 deliveryUnitRepository.delete(deliveryUnit.get().get(0).getId());
             }
         }
-        if(pro.getVehicle() != null){
-            Optional<List<DeliveryUnit>> deliveryUnit = Optional.ofNullable(deliveryUnitRepository.getByKeyAndValue("vehicle_id", String.valueOf(pro.getVehicle().getId())));
+        if(dUnit.getVehicle() != null){
+            Optional<List<DeliveryUnit>> deliveryUnit = Optional.ofNullable(deliveryUnitRepository.getByKeyAndValue("vehicle_id", String.valueOf(dUnit.getVehicle().getId())));
             if(deliveryUnit.isPresent() && !deliveryUnit.get().isEmpty()){
                 deliveryUnitRepository.delete(deliveryUnit.get().get(0).getId());
             }
         }
-        if(pro.getDriver() != null){
-            Optional<List<DeliveryUnit>> deliveryUnit = Optional.ofNullable(deliveryUnitRepository.getByKeyAndValue("driver_id", String.valueOf(pro.getDriver().getId())));
+        if(dUnit.getDriver() != null){
+            Optional<List<DeliveryUnit>> deliveryUnit = Optional.ofNullable(deliveryUnitRepository.getByKeyAndValue("driver_id", String.valueOf(dUnit.getDriver().getId())));
             if(deliveryUnit.isPresent() && !deliveryUnit.get().isEmpty()){
                 deliveryUnitRepository.delete(deliveryUnit.get().get(0).getId());
             }
         }
-        if(pro.getHelpingHand() != null){
-            Optional<List<DeliveryUnit>> deliveryUnit = Optional.ofNullable(deliveryUnitRepository.getByKeyAndValue("helping_hand_id", String.valueOf(pro.getHelpingHand().getId())));
+        if(dUnit.getHelpingHand() != null){
+            Optional<List<DeliveryUnit>> deliveryUnit = Optional.ofNullable(deliveryUnitRepository.getByKeyAndValue("helping_hand_id", String.valueOf(dUnit.getHelpingHand().getId())));
             if(deliveryUnit.isPresent() && !deliveryUnit.get().isEmpty()){
                 deliveryUnitRepository.delete(deliveryUnit.get().get(0).getId());
             }
@@ -134,12 +130,12 @@ public class DeliveryUnitServiceImpl implements DeliveryUnitService {
     public DeliveryUnit update(DeliveryUnitDto deliveryUnitDto) {
 
 
-        DeliveryUnit pro = new DeliveryUnit(deliveryUnitDto);
+        DeliveryUnit dUnit = new DeliveryUnit(deliveryUnitDto);
 
         Optional<DeliveryUnit> deliveryUnit;
         try{
-            int proId = deliveryUnitRepository.update(pro);
-            deliveryUnit = Optional.ofNullable(deliveryUnitRepository.getById(proId));
+            int dUnitId = deliveryUnitRepository.update(dUnit);
+            deliveryUnit = Optional.ofNullable(deliveryUnitRepository.getById(dUnitId));
         }catch (Exception e){
             return null;
         }

@@ -86,8 +86,8 @@ public class DeliveryUnit {
         }
 
         User helpingHand = new User();
-        if(deliveryUnitDto.getHelping_hand() != 0 ){
-            helpingHand.setId(deliveryUnitDto.getHelping_hand());
+        if(deliveryUnitDto.getHelping_hand_id() != 0 ){
+            helpingHand.setId(deliveryUnitDto.getHelping_hand_id());
         }else {
             helpingHand = null;
         }
