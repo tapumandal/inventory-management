@@ -52,6 +52,14 @@ public class Delivery {
     @JoinColumn(name = "delivery_id")
     private List<DeliveryProduct> deliveryProducts;
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "delivery_id")
+    private List<ReturnedProduct> returnedProducts;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "delivery_id")
+    private List<WastageProduct> wastageProducts;
+
     @Column(name = "company_id", updatable = false)
     protected int companyId = ApplicationPreferences.getUser().getCompany().getId();
 
@@ -70,30 +78,63 @@ public class Delivery {
     public Delivery(DeliveryDto deliveryDto) {
 
 
-        this.id = deliveryDto.getId();
-        User tmpDsr = new User();
-        tmpDsr.setId(deliveryDto.getDsr_id());
-        this.dsr = tmpDsr;
+        User dsr = new User();
+        if(deliveryDto.getDsr_id() != 0) {
+            dsr.setId(deliveryDto.getDsr_id());
+        }else{
+            dsr = null;
+        }
 
-        Vehicle tmpVlc = new Vehicle();
-        tmpVlc.setId(deliveryDto.getVehicle_id());
-        this.vehicle = tmpVlc;
+        Vehicle vehicle = new Vehicle();
+        if(deliveryDto.getVehicle_id() != 0) {
+            vehicle.setId(deliveryDto.getVehicle_id());
+        }else{
+            vehicle = null;
+        }
 
-        User tmpDriver = new User();
-        tmpDriver.setId(deliveryDto.getDriver_id());
-        this.driver = tmpDriver;
+        User driver = new User();
+        if(deliveryDto.getDriver_id() != 0) {
+            driver.setId(deliveryDto.getDriver_id());
+        }else{
+            driver = null;
+        }
 
-        User tmpHelpingHand = new User();
-        tmpHelpingHand.setId(deliveryDto.getHelping_hand_id());
-        this.helpingHand = tmpHelpingHand;
+        User helpingHand = new User();
+        if(deliveryDto.getHelping_hand_id() != 0 ){
+            helpingHand.setId(deliveryDto.getHelping_hand_id());
+        }else {
+            helpingHand = null;
+        }
 
         this.deliveryTime = deliveryDto.getDelivery_time();
+        this.dsr = dsr;
+        this.vehicle = vehicle;
+        this.driver = driver;
+        this.helpingHand = helpingHand;
 
-        List<DeliveryProduct> deliveryProductsTmp = new ArrayList<DeliveryProduct>();
-        for (DeliveryProductDto dpDto: deliveryDto.getDelivery_products()){
-            deliveryProductsTmp.add(new DeliveryProduct(dpDto));
+        if(!deliveryDto.getDelivery_products().isEmpty()) {
+            List<DeliveryProduct> tmp = new ArrayList<DeliveryProduct>();
+            for (DeliveryProductDto dpDto : deliveryDto.getDelivery_products()) {
+                tmp.add(new DeliveryProduct(dpDto));
+            }
+            this.deliveryProducts = tmp;
         }
-        this.deliveryProducts  = deliveryProductsTmp;
+
+        if(!deliveryDto.getReturned_products().isEmpty()) {
+            List<ReturnedProduct> tmp = new ArrayList<ReturnedProduct>();
+            for (DeliveryProductDto dpDto : deliveryDto.getReturned_products()) {
+                tmp.add(new ReturnedProduct(dpDto));
+            }
+            this.returnedProducts = tmp;
+        }
+
+        if(!deliveryDto.getWastage_products().isEmpty()) {
+            List<WastageProduct> tmp = new ArrayList<WastageProduct>();
+            for (DeliveryProductDto dpDto : deliveryDto.getWastage_products()) {
+                tmp.add(new WastageProduct(dpDto));
+            }
+            this.wastageProducts = tmp;
+        }
     }
 
 
@@ -151,6 +192,22 @@ public class Delivery {
 
     public void setDeliveryProducts(List<DeliveryProduct> deliveryProducts) {
         this.deliveryProducts = deliveryProducts;
+    }
+
+    public List<ReturnedProduct> getReturnedProducts() {
+        return returnedProducts;
+    }
+
+    public void setReturnedProducts(List<ReturnedProduct> returnedProducts) {
+        this.returnedProducts = returnedProducts;
+    }
+
+    public List<WastageProduct> getWastageProducts() {
+        return wastageProducts;
+    }
+
+    public void setWastageProducts(List<WastageProduct> wastageProducts) {
+        this.wastageProducts = wastageProducts;
     }
 
     public int getCompanyId() {

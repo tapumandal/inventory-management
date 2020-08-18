@@ -25,8 +25,9 @@ public class DeliveryDto {
 
     private String delivery_time;
 
-    @NotNull(message = "Select products")
     private List<DeliveryProductDto> delivery_products;
+    private List<DeliveryProductDto> returned_products;
+    private List<DeliveryProductDto> wastage_products;
 
     @Nullable
     private boolean is_deleted = false;
@@ -89,6 +90,22 @@ public class DeliveryDto {
 
     public void setDelivery_products(List<DeliveryProductDto> delivery_products) {
         this.delivery_products = delivery_products;
+    }
+
+    public List<DeliveryProductDto> getReturned_products() {
+        return returned_products;
+    }
+
+    public void setReturned_products(List<DeliveryProductDto> returned_products) {
+        this.returned_products = returned_products;
+    }
+
+    public List<DeliveryProductDto> getWastage_products() {
+        return wastage_products;
+    }
+
+    public void setWastage_products(List<DeliveryProductDto> wastage_products) {
+        this.wastage_products = wastage_products;
     }
 
     public boolean isIs_deleted() {

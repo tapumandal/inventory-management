@@ -44,7 +44,7 @@ public class DeliveryProductDto {
 
     private int warehouse_id;
 
-    @NotNull(message = "Product State")
+    @NotNull(message = "State must be DELIVERY, RETURNED or WASTAGE")
     private String state;
 
     public DeliveryProductDto() {

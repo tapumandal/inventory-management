@@ -1,7 +1,6 @@
 package com.tapumandal.ims.util;
 
-import com.tapumandal.ims.entity.ChallanProduct;
-import com.tapumandal.ims.entity.Measurement;
+import com.tapumandal.ims.entity.*;
 import com.tapumandal.ims.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,7 +33,6 @@ public class ResourceVerifier {
     public boolean checkChallanProduct(List<ChallanProduct> challanProducts) {
         for (ChallanProduct tmpChallanPro: challanProducts) {
 
-
             if(!checkProduct(tmpChallanPro.getProduct().getId())){
                 System.out.println("checkProduct");
                 return false;
@@ -49,6 +47,13 @@ public class ResourceVerifier {
                 System.out.println("checkWarehouse");
                 return false;
             }
+        }
+        return true;
+    }
+
+    public boolean checkProduct(int id) {
+        if(!productService.isActive(id)){
+            return false;
         }
         return true;
     }
@@ -68,13 +73,6 @@ public class ResourceVerifier {
 
     public boolean checkSupplier(int id) {
         if(!supplierService.isActive(id)){
-            return false;
-        }
-        return true;
-    }
-
-    public boolean checkProduct(int id) {
-        if(!productService.isActive(id)){
             return false;
         }
         return true;
@@ -103,4 +101,72 @@ public class ResourceVerifier {
         }
         return true;
     }
+
+    public boolean checkDeliveryProduct(List<DeliveryProduct> products) {
+        if(!products.isEmpty())
+        for (DeliveryProduct tmpPro: products) {
+
+            if(!checkProduct(tmpPro.getProduct().getId())){
+                System.out.println("checkProduct");
+                return false;
+            }
+
+            if(!checkMeasurement(tmpPro.getMeasurement().getId())){
+                System.out.println("checkMeasurement");
+                return false;
+            }
+
+            if(!checkWarehouse(tmpPro.getWarehouse().getId())){
+                System.out.println("checkWarehouse");
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean checkReturnProduct(List<ReturnedProduct> products) {
+        if(!products.isEmpty())
+            for (ReturnedProduct tmpPro: products) {
+
+                if(!checkProduct(tmpPro.getProduct().getId())){
+                    System.out.println("checkProduct");
+                    return false;
+                }
+
+                if(!checkMeasurement(tmpPro.getMeasurement().getId())){
+                    System.out.println("checkMeasurement");
+                    return false;
+                }
+
+                if(!checkWarehouse(tmpPro.getWarehouse().getId())){
+                    System.out.println("checkWarehouse");
+                    return false;
+                }
+            }
+        return true;
+    }
+
+    public boolean checkWastageProduct(List<WastageProduct> products) {
+        if(!products.isEmpty())
+            for (WastageProduct tmpPro: products) {
+
+                if(!checkProduct(tmpPro.getProduct().getId())){
+                    System.out.println("checkProduct");
+                    return false;
+                }
+
+                if(!checkMeasurement(tmpPro.getMeasurement().getId())){
+                    System.out.println("checkMeasurement");
+                    return false;
+                }
+
+                if(!checkWarehouse(tmpPro.getWarehouse().getId())){
+                    System.out.println("checkWarehouse");
+                    return false;
+                }
+            }
+        return true;
+    }
 }
+
+

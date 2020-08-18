@@ -10,6 +10,7 @@ import com.tapumandal.ims.service.DeliveryService;
 import com.tapumandal.ims.service.UserService;
 import com.tapumandal.ims.service.VehicleService;
 import com.tapumandal.ims.util.MyPagenation;
+import com.tapumandal.ims.util.ResourceVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,9 @@ public class DeliveryServiceImpl implements DeliveryService {
     @Autowired
     VehicleService vehicleService;
 
+    @Autowired
+    ResourceVerifier resourceVerifier;
+
     private Delivery delivery;
 
     public DeliveryServiceImpl(){}
@@ -39,22 +43,56 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public Delivery create(DeliveryDto deliveryDto) {
-        Delivery pro = new Delivery(deliveryDto);
-//        if(!checkUsers(pro)){
-//            System.out.println("CHECK USER");
-//            return null;
-//        }
-//
-//        if(!checkVehicle(pro)){
-//            System.out.println("CHECK VEHICLE");
-//            return null;
-//        }
+        System.out.println(new Gson().toJson(deliveryDto));
+        Delivery deli = new Delivery(deliveryDto);
+        System.out.println(new Gson().toJson(deli));
+        if(!resourceVerifier.checkUser(deli.getDsr().getId()) ){
+            System.out.println("CHECK DSR");
+            return null;
+        }
 
+        if(deli.getDriver() != null){
+            if(!resourceVerifier.checkUser(deli.getDriver().getId())){
+                System.out.println("CHECK Driver");
+                return null;
+            }
+        }
+
+        if(deli.getHelpingHand() != null){
+            if(!resourceVerifier.checkUser(deli.getHelpingHand().getId())){
+                System.out.println("CHECK Helping Hand");
+                return null;
+            }
+        }
+
+        if(deli.getVehicle() != null){
+            if(!resourceVerifier.checkVehicle(deli.getVehicle().getId())){
+                System.out.println("CHECK VEHICLE");
+                return null;
+            }
+        }
+
+        if(!resourceVerifier.checkDeliveryProduct(deli.getDeliveryProducts())){
+            System.out.println("CHECK getChallanProducts");
+            return null;
+        }
+
+
+        if(!resourceVerifier.checkReturnProduct(deli.getReturnedProducts())){
+            System.out.println("CHECK getReturnProducts");
+            return null;
+        }
+
+
+        if(!resourceVerifier.checkWastageProduct(deli.getWastageProducts())){
+            System.out.println("CHECK getWastageProducts");
+            return null;
+        }
 
         Optional<Delivery> delivery;
 
 //        try{
-            int receiveChallanId = deliveryRepository.create(pro);
+            int receiveChallanId = deliveryRepository.create(deli);
         System.out.println("DELIVERY UNIT ID: "+receiveChallanId);
             delivery = Optional.ofNullable(deliveryRepository.getById(receiveChallanId));
 //        }catch (Exception e){
@@ -99,11 +137,11 @@ public class DeliveryServiceImpl implements DeliveryService {
     public Delivery update(DeliveryDto deliveryDto) {
 
 
-        Delivery pro = new Delivery(deliveryDto);
+        Delivery deli = new Delivery(deliveryDto);
 
         Optional<Delivery> delivery;
 //        try{
-            int proId = deliveryRepository.update(pro);
+            int proId = deliveryRepository.update(deli);
             delivery = Optional.ofNullable(deliveryRepository.getById(proId));
 //        }catch (Exception e){
 //            return null;
