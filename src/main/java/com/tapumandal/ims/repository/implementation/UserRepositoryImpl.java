@@ -86,7 +86,7 @@ public class UserRepositoryImpl  implements UserRepository {
 
     public User getByUserName(String userName) {
 
-        String query = "FROM User U WHERE U.email = '"+userName+"' AND U.isDeleted = 0";
+        String query = "FROM User U WHERE U.username = '"+userName+"' AND U.isDeleted = 0";
         return (User) getSession().createQuery(query).uniqueResult();
     }
 
@@ -138,5 +138,12 @@ public class UserRepositoryImpl  implements UserRepository {
 
         String query = "FROM User U WHERE U.id = "+id+" AND U.isDeleted = 0 AND U.company.id = "+ApplicationPreferences.getUser().getCompany().getId();
         return (User) getSession().createQuery(query).uniqueResult();
+    }
+
+    @Override
+    public User getUserByUserName(String username) {
+        return (User) getSession().createQuery(
+                "from User where username = :value"
+        ).setParameter("value", username).getSingleResult();
     }
 }

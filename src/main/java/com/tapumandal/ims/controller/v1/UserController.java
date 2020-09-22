@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.prefs.Preferences;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 @RestController
 @RequestMapping("/api/v1")
 public class UserController extends ControllerHelper {
@@ -42,7 +43,7 @@ public class UserController extends ControllerHelper {
     UserService userService;
 
     @PostMapping("/authenticate")
-    public ResponseEntity<Jwt> authenticate(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+    public ResponseEntity<LoginResponseModel> authenticate(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
 
         try {
             authenticationManager.authenticate(
@@ -54,7 +55,11 @@ public class UserController extends ControllerHelper {
 
         userDetails = myuserDetailsService.loadUserByUsername(authenticationRequest.getUsername().toString());
 
-        return ResponseEntity.ok(new Jwt(jwtUtil.generateToken(userDetails)));
+        LoginResponseModel loginResponseModel = new LoginResponseModel();
+        loginResponseModel.setJwt(jwtUtil.generateToken(userDetails));
+        loginResponseModel.setUser(userService.getUserByUserName(userDetails.getUsername()));
+
+        return ResponseEntity.ok(loginResponseModel);
     }
 
     @GetMapping("/")
@@ -65,7 +70,7 @@ public class UserController extends ControllerHelper {
     @PostMapping(path = "/registration")
     public CommonResponseSingle userRegistration(@RequestBody @Valid UserDto userDto, HttpServletRequest request) {
 
-        if (!userService.isUserExist(userDto.getEmail())) {
+        if (!userService.isUserExist(userDto.getUsername())) {
             if (userDto.getCompany().getId() != 0) {
                 return response(false, HttpStatus.BAD_REQUEST, "Please check your company information.", (User) null);
             }
@@ -87,7 +92,7 @@ public class UserController extends ControllerHelper {
 
         storeUserDetails(request);
 
-        if (!userService.isUserExist(userDto.getEmail())) {
+        if (!userService.isUserExist(userDto.getUsername())) {
 
             userDto.setCompany(null);
             User user = userService.createUser(userDto);

@@ -22,7 +22,7 @@ public class ApplicationPreferences {
     private static User user;
 
     public void saveUserByUsername(String username) {
-        User u = userService.getByValue("email", username);
+        User u = userService.getByValue("username", username);
         preferences = Preferences.userRoot().node(this.getClass().getName());
         preferences.put("name", u.getName());
         preferences.put("phone", u.getPhone());

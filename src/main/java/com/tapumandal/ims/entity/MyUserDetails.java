@@ -21,7 +21,7 @@ public class MyUserDetails implements UserDetails {
     public MyUserDetails(){}
 
     public MyUserDetails(User user){
-        this.username = user.getEmail();
+        this.username = user.getUsername();
         this.password = user.getPassword();
         this.active = user.isActive();
         this.authrities = Arrays.stream(user.getRole().split(","))

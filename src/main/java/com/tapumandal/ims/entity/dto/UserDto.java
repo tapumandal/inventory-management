@@ -20,9 +20,8 @@ public class UserDto{
     @Size(min=4, max = 32, message = "Write a proper name")
     protected String name;
 
-    @NotNull(message = "email can't be empty")
-    @Email(message = "Email is not valid")
-    protected String email;
+    @NotNull(message = "UserName can't be empty")
+    protected String username;
 
     @NotNull(message = "phone can't be empty")
     @Size(min=7, max = 20, message = "Phone number is not usable")
@@ -66,12 +65,11 @@ public class UserDto{
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public String getUsername() {
+        return username;
     }
-
-    public void setEmail(String email) {
-        this.email = email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPhone() {
@@ -136,5 +134,13 @@ public class UserDto{
 
     public void setIs_deleted(boolean is_deleted) {
         this.is_deleted = is_deleted;
+    }
+
+    public boolean isIs_active() {
+        return is_active;
+    }
+
+    public boolean isIs_deleted() {
+        return is_deleted;
     }
 }

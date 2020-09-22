@@ -1,6 +1,8 @@
 package com.tapumandal.ims.entity;
 
 import java.sql.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.persistence.*;
 
@@ -12,7 +14,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.Where;
 
 @Entity
-@Table(name="user")
+@Table(name = "user")
 public class User {
 
     @Id
@@ -22,11 +24,14 @@ public class User {
     @Column(name = "name")
     protected String name;
 
-    @Column(name = "email", unique = true)
-    protected String email;
+    @Column(name = "username", unique = true)
+    protected String username;
 
-    @Column(name = "email_status")
-    protected boolean isEmailVerified;
+    @Column(name = "username_status")
+    protected boolean isUsernameVerified;
+
+    @Column(name = "username_type")
+    protected String usernameType;
 
     @Column(name = "phone")
     protected String phone;
@@ -39,7 +44,7 @@ public class User {
 
     @Column(name = "work_title")
     protected String workTitle;
-    
+
     @Column(name = "role")
     protected String role;
 
@@ -50,7 +55,7 @@ public class User {
     @Column(name = "is_deleted", columnDefinition = "boolean default 0")
     private boolean isDeleted = false;
 
-    @Column(name = "created_at", updatable=false)
+    @Column(name = "created_at", updatable = false)
     @CreationTimestamp
     private Date createdAt;
 
@@ -58,11 +63,10 @@ public class User {
     @UpdateTimestamp
     private Date updatedAt;
 
-    private String userName;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "company_id")
-    @Where(clause = "company_is_deleted = false AND company_is_active = true" )
+    @Where(clause = "company_is_deleted = false AND company_is_active = true")
     @JsonSerialize(using = CustomCompanySerializer.class)
     private Company company;
 
@@ -74,12 +78,15 @@ public class User {
 //    @OneToOne( mappedBy = "helpingHand" )
 //    private DeliveryUnit helpingHand;
 
-    public User(){};
+    public User() {
+    }
+
+    ;
 
     public User(UserDto userDto) {
 
         this.name = userDto.getName();
-        this.email = userDto.getEmail();
+        this.username = userDto.getUsername();
         this.phone = userDto.getPhone();
         this.password = userDto.getPassword();
         this.address = userDto.getAddress();
@@ -88,9 +95,7 @@ public class User {
         this.isActive = userDto.isActive();
         this.isDeleted = userDto.isDeleted();
 
-        this.userName = userDto.getEmail();
-
-        if(userDto.getCompany() != null){
+        if (userDto.getCompany() != null) {
             this.company = new Company(userDto.getCompany());
         }
     }
@@ -112,21 +117,28 @@ public class User {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-        this.userName = email;
+    public String getUsername() {
+        return username;
     }
 
-    public boolean isEmailVerified() {
-        return isEmailVerified;
+    public boolean isUsernameVerified() {
+        return isUsernameVerified;
     }
 
-    public void setEmailVerified(boolean isEmailVerified) {
-        this.isEmailVerified = isEmailVerified;
+    public void setUsernameVerified(boolean usernameVerified) {
+        isUsernameVerified = usernameVerified;
+    }
+
+    public String getUsernameType() {
+        return usernameType;
+    }
+
+    public void setUsernameType(String usernameType) {
+        this.usernameType = usernameType;
     }
 
     public String getPhone() {
@@ -209,18 +221,6 @@ public class User {
         this.company = company;
     }
 
-    public String getUsername(){
-        return this.userName;
-    }
-
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
 
 //    public DeliveryUnit getDsr() {
 //        return dsr;

@@ -77,12 +77,13 @@ public class Delivery {
     public Delivery() {}
     public Delivery(DeliveryDto deliveryDto) {
 
+        this.id = deliveryDto.getId();
 
         User dsr = new User();
         if(deliveryDto.getDsr_id() != 0) {
             dsr.setId(deliveryDto.getDsr_id());
         }else{
-            dsr = null;
+            dsr = new User();
         }
 
         Vehicle vehicle = new Vehicle();

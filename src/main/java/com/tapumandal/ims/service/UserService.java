@@ -7,6 +7,6 @@ public interface UserService extends Service<UserDto, User>{
 
     public boolean isUserExist(String userName);
     public User createUser(UserDto userDto);
-
+    public User getUserByUserName(String username);
 
 }

@@ -1,8 +1,7 @@
 package com.tapumandal.ims.service.implementation;
 
 import com.google.gson.Gson;
-import com.tapumandal.ims.entity.Delivery;
-import com.tapumandal.ims.entity.User;
+import com.tapumandal.ims.entity.*;
 import com.tapumandal.ims.entity.dto.DeliveryDto;
 import com.tapumandal.ims.repository.DeliveryRepository;
 import com.tapumandal.ims.service.ChallanManagementService;
@@ -15,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,9 +43,12 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     public Delivery create(DeliveryDto deliveryDto) {
+
         System.out.println(new Gson().toJson(deliveryDto));
         Delivery deli = new Delivery(deliveryDto);
         System.out.println(new Gson().toJson(deli));
+
+
         if(!resourceVerifier.checkUser(deli.getDsr().getId()) ){
             System.out.println("CHECK DSR");
             return null;
@@ -106,43 +109,84 @@ public class DeliveryServiceImpl implements DeliveryService {
         }
     }
 
-    private boolean checkVehicle(Delivery delivery) {
-//        if(delivery.getVehicle() != null){
-//            return vehicleService.isActive(delivery.getVehicle().getId());
-//        }
-        return true;
-    }
-
-    private boolean checkUsers(Delivery delivery) {
-
-//        if(delivery.getDsr() != null){
-//            System.out.println("getDsr NOT NULL");
-//            if(!userService.isActive(delivery.getDsr().getId()))
-//                return false;
-//        }
-//        if(delivery.getDriver() != null){
-//            System.out.println("getDriver NOT NULL");
-//            if(!userService.isActive(delivery.getDriver().getId()))
-//                return false;
-//        }
-//        if(delivery.getHelpingHand() != null){
-//            System.out.println("getHelpingHand NOT NULL");
-//            if(!userService.isActive(delivery.getHelpingHand().getId()))
-//                return false;
-//        }
-        return true;
-    }
 
     @Override
     public Delivery update(DeliveryDto deliveryDto) {
 
 
+        System.out.println(new Gson().toJson(deliveryDto));
         Delivery deli = new Delivery(deliveryDto);
+        System.out.println(new Gson().toJson(deli));
+
+        if(!resourceVerifier.checkUser(deli.getDsr().getId()) ){
+            System.out.println("CHECK DSR");
+            return null;
+        }
+        System.out.println("checkUser");
+
+        if(deli.getDriver() != null){
+            if(!resourceVerifier.checkUser(deli.getDriver().getId())){
+                System.out.println("CHECK Driver");
+                return null;
+            }
+        }
+        System.out.println("getDriver");
+
+        if(deli.getHelpingHand() != null){
+            if(!resourceVerifier.checkUser(deli.getHelpingHand().getId())){
+                System.out.println("CHECK Helping Hand");
+                return null;
+            }
+        }
+        System.out.println("getHelpingHand");
+
+        if(deli.getVehicle() != null){
+            if(!resourceVerifier.checkVehicle(deli.getVehicle().getId())){
+                System.out.println("CHECK VEHICLE");
+                return null;
+            }
+        }
+        System.out.println("getVehicle");
+
+
+//        Delivery savedDelivery = new Delivery();
+//        if(isActive(deli.getId())){
+//            savedDelivery = getById(deli.getId());
+//        }else{
+//            return null;
+//        }
+
+//        savedDelivery = updateNewDelivery(savedDelivery, deli);
+
+        if(!resourceVerifier.checkDeliveryProduct(deli.getDeliveryProducts())){
+            System.out.println("CHECK getChallanProducts");
+            return null;
+        }
+//        else{
+//            savedDelivery.setDeliveryProducts(updateDeliveryProduct(savedDelivery, deli));
+//        }
+
+        if(!resourceVerifier.checkReturnProduct(deli.getReturnedProducts())){
+            System.out.println("CHECK getReturnProducts");
+            return null;
+        }
+
+        if(!resourceVerifier.checkWastageProduct(deli.getWastageProducts())){
+            System.out.println("CHECK getWastageProducts");
+            return null;
+        }
+
+
+
+
+//        Delivery deli = new Delivery(deliveryDto);
 
         Optional<Delivery> delivery;
 //        try{
-            int proId = deliveryRepository.update(deli);
-            delivery = Optional.ofNullable(deliveryRepository.getById(proId));
+            int deliId = deliveryRepository.update(deli);
+            System.out.println("deliId "+deliId);
+            delivery = Optional.ofNullable(deliveryRepository.getById(deliId));
+//        System.out.println(new Gson().toJson(delivery.get()));
 //        }catch (Exception e){
 //            return null;
 //        }
@@ -153,6 +197,32 @@ public class DeliveryServiceImpl implements DeliveryService {
             return null;
         }
 
+    }
+
+    private List<DeliveryProduct> updateDeliveryProduct(Delivery savedDelivery, Delivery deli) {
+        List<DeliveryProduct> products = savedDelivery.getDeliveryProducts();
+        for (DeliveryProduct tmpPro: products) {
+
+        }
+
+        return products;
+    }
+
+    private Delivery updateNewDelivery(Delivery savedDelivery, Delivery deli) {
+
+        savedDelivery.setDsr(deli.getDsr());
+        savedDelivery.setVehicle(deli.getVehicle());
+        savedDelivery.setDriver(deli.getDriver());
+        savedDelivery.setHelpingHand(deli.getHelpingHand());
+        savedDelivery.setDeliveryTime(deli.getDeliveryTime());
+        savedDelivery.setDeleted(deli.isDeleted());
+
+
+//        savedDelivery.setDeliveryProducts(deli.getDeliveryProducts());
+//        savedDelivery.setReturnedProducts(deli.getReturnedProducts());
+//        savedDelivery.setWastageProducts(deli.getWastageProducts());
+
+        return savedDelivery;
     }
 
     @Override

@@ -3,14 +3,11 @@ package com.tapumandal.ims.service.implementation;
 import com.google.gson.Gson;
 import com.tapumandal.ims.entity.Company;
 import com.tapumandal.ims.entity.User;
-import com.tapumandal.ims.entity.User;
 import com.tapumandal.ims.entity.dto.UserDto;
-import com.tapumandal.ims.repository.UserRepository;
 import com.tapumandal.ims.repository.UserRepository;
 import com.tapumandal.ims.service.CompanyService;
 import com.tapumandal.ims.service.UserService;
 import com.tapumandal.ims.util.ApplicationPreferences;
-import com.tapumandal.ims.util.ControllerHelper;
 import com.tapumandal.ims.util.MyPagenation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +15,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -56,6 +55,8 @@ public class UserServiceImpl implements UserService{
         User u = new User(userDto);
         u.setCompany(company);
         u.setRole("ADMIN");
+
+        u = this.checkUsernameType(u);
 
 
         Optional<User> user;
@@ -150,6 +151,16 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
+    public User getUserByUserName(String username) {
+        Optional<User> user = Optional.ofNullable(userRepository.getUserByUserName(username));
+        if(user.isPresent()){
+            return user.get();
+        }else{
+            return null;
+        }
+    }
+
+    @Override
     public boolean deleteById(int id) {
         try {
             return userRepository.delete(id);
@@ -160,7 +171,7 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User getByValue(String key, String value) {
-        User user = userRepository.getByKeyAndValue("email", value).get(0);
+        User user = userRepository.getByKeyAndValue(key, value).get(0);
 
         return user;
     }
@@ -196,6 +207,21 @@ public class UserServiceImpl implements UserService{
         return userRepository.isUserExist(userName);
     }
 
+    protected User checkUsernameType(User u){
+        Pattern pattern = Pattern.compile("[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}");
+        Matcher mat = pattern.matcher(u.getUsername());
+        if(mat.matches()){
+            u.setUsernameType("EMAIL");
+        }else{
+            u.setUsername(u.getUsername().replace("+88", ""));
+            u.setUsername(u.getUsername().replace("88", ""));
 
-
+//            Pattern pattern2 = Pattern.compile("\\d{11}$");
+//            Matcher mat2 = pattern2.matcher(u.getUsername());
+//            if(mat.matches()) {
+            u.setUsernameType("MOBILE");
+//            }
+        }
+        return u;
+    }
 }

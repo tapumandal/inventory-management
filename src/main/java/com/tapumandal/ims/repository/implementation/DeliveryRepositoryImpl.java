@@ -39,15 +39,18 @@ public class DeliveryRepositoryImpl implements DeliveryRepository {
 
     @Override
     public int update(Delivery delivery) {
-
+        System.out.println("update");
         Optional<Delivery> tmpEntity = Optional.ofNullable(getById(delivery.getId()));
+        System.out.println(tmpEntity.get());
         getSession().clear();
 
         if(tmpEntity.isPresent()) {
+            System.out.println("IF");
             getSession().update(delivery);
             getSession().flush();
             getSession().clear();
         }
+        System.out.println(delivery.getId());
         return delivery.getId();
     }
 
